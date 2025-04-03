@@ -13,7 +13,8 @@ $_SESSION['titulo'] = "Página PHP";
 <body>
     <form action="cadastro.php" method="POST">
         Name: <input type="text" name="name">
-        E-mail: <input type="text" name="email">
+        E-mail: <input type="text" name="email"><br>
+        Frase: <input type="text" name="frase">
         <input type="submit">
     </form>
 </body>
