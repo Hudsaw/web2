@@ -12,9 +12,9 @@ $_SESSION['titulo'] = "Página PHP";
 </head>
 <body>
     <form action="cadastro.php" method="POST">
-        Name: <input type="text" name="name">
-        E-mail: <input type="text" name="email"><br>
-        Frase: <input type="text" name="frase">
+        Name: <input type="text" name="name"><br>
+        E-mail: <input type="text" name="email" required><br>
+        Frase: <input type="text" name="frase"><br>
         <input type="submit">
     </form>
 </body>

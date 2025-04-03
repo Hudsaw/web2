@@ -7,6 +7,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = isset($_POST['email']) ? htmlspecialchars($_POST['email']) : "E-mail não informado";
     $frase = isset($_POST['frase']) ? htmlspecialchars($_POST['frase']) : "A frase não foi informada";
 
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<h1>Erro</h1>";
+        echo "<p>O e-mail fornecido não é válido.</p>";
+        exit; 
+    }
+
     echo "<h1>$titulo</h1>";
     echo "<p><strong>Nome:</strong> $name</p>";
     echo "<p><strong>E-mail:</strong> $email</p>";
