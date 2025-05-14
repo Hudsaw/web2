@@ -1,8 +1,5 @@
 <?php
-require_once __DIR__ . '/../../config/constants.php';
-require_once __DIR__ . '/../../config/database.php';
-
-use Config\Database;
+require_once __DIR__ . '/database.php';
 
 // Inicia sessão de forma segura
 if (session_status() === PHP_SESSION_NONE) {
@@ -10,22 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
         'cookie_secure' => true,
         'cookie_httponly' => true
     ]);
-}
-
-// Redireciona se já logado
-if (isset($_SESSION['usuario_id'])) {
-    
-    // Redirecionamento seguro
-    $redirect = match($usuario['tipo']) {
-        'admin' => 'views/admin/dashboard.php',
-        'medico' => 'views/medico/dashboard.php',
-        'especialista' => 'views/especialista/dashboard.php',
-        default => 'public/index.php'
-    };
-    
-    header('Location: ' . BASE_URL . $redirect);
-    exit();
-    
 }
 
 $erro = null;
@@ -47,17 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 $_SESSION['usuario_id'] = $usuario['id'];
                 $_SESSION['usuario_nome'] = $usuario['nome'];
-                $_SESSION['tipo_usuario'] = $usuario['tipo'];
                 
-                // Redirecionamento seguro
-                $redirect = match($usuario['tipo']) {
-                    'admin' => 'views/admin/dashboard.php',
-                    'medico' => 'views/medico/dashboard.php',
-                    'especialista' => 'views/especialista/dashboard.php',
-                    default => 'public/index.php'
-                };
-                
-                header('Location: ' . BASE_URL . $redirect);
+                header('Location: ' . $redirect);
                 exit();
             } else {
                 $erro = "Credenciais inválidas"; 
@@ -71,7 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-require_once VIEWS_PATH . 'shared/header.php';
+// Inclui o header.php
+require_once __DIR__ . '/header.php';
 ?>
 
 <div class="auth-container">
@@ -94,20 +67,21 @@ require_once VIEWS_PATH . 'shared/header.php';
             <input type="password" id="senha" name="senha" required>
         </div>
         <button type="submit" class="btn btn-primary">
-    <i class="fas fa-sign-in-alt"></i> Entrar
-</button>
+            <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
     </form>
     <div class="auth-links">
-        <a href="<?php echo BASE_URL; ?>views/auth/resetar.php">
+        <a href="resetar.php">
             <i class="fas fa-key"></i> Esqueceu sua senha?
         </a>
         <span> | </span>
-        <a href="<?php echo BASE_URL; ?>views/auth/cadastro.php">
+        <a href="cadastro.php">
             <i class="fas fa-user-plus"></i> Criar nova conta
         </a>
     </div>
 </div>
 
 <?php 
-require_once VIEWS_PATH . 'shared/footer.php';
+// Inclui o rodape.php
+require_once __DIR__ . '/rodape.php';
 ?>
