@@ -1,5 +1,7 @@
 <?php
 
+define('BASE_URL', 'http://localhost/web2/prova/');
+
  class Database {
      private static $instance = null;
  
