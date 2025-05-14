@@ -1,63 +1,24 @@
 <?php
-// views/auth/cadastro.php
 
-require_once __DIR__ . '/../../config/constants.php';
-require_once __DIR__ . '/../../config/database.php';
-
-use Config\Database;
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once __DIR__ . '/database.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Redireciona se já logado
-if (isset($_SESSION['usuario_id']) && isset($_SESSION['tipo_usuario'])) {
-    // Redirecionamento seguro usando a sessão
-    $redirect = match ($_SESSION['tipo_usuario']) {
-        'admin' => 'views/admin/dashboard.php',
-        'medico' => 'views/medico/dashboard.php',
-        'especialista' => 'views/especialista/dashboard.php',
-        default => 'public/index.php'
-    };
-
-    header('Location: ' . BASE_URL . $redirect);
-    exit();
-}
 
 $erros = $_SESSION['erros_cadastro'] ?? [];
 $dados = $_SESSION['dados_cadastro'] ?? [];
 unset($_SESSION['erros_cadastro']);
 unset($_SESSION['dados_cadastro']);
 
-$planoSelecionado = $_GET['plano'] ?? null;
 
-try {
-    $pdo = Database::getInstance();
-    $stmt = $pdo->query("SELECT id, nome FROM especialidades WHERE ativo = 1");
-    $especialidades = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $especialidades = [];
-    error_log("Erro ao buscar especialidades: " . $e->getMessage());
-}
-try {
-    $pdo = Database::getInstance();
-    $stmt = $pdo->query("SELECT id, nome FROM tipos_exame WHERE ativo = 1");
-    $tiposExame = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $tiposExame = [];
-    error_log("Erro ao buscar tipos de exame: " . $e->getMessage());
-}
-
-require_once VIEWS_PATH . 'shared/header.php';
+require_once __DIR__ . '/header.php';
 ?>
 
 <div class="auth-container">
     <h1 class="auth-title">Crie sua conta</h1>
-    <form class="auth-form" id="form-cadastro" method="POST" action="<?php echo BASE_URL; ?>app/controllers/AuthController.php?action=register">
+    <form class="auth-form" id="form-cadastro" method="POST" action="/AuthController.php?action=register">
         <!-- Dados Pessoais -->
         <div class="form-section">
             <h3>Dados Pessoais</h3>
@@ -112,53 +73,40 @@ require_once VIEWS_PATH . 'shared/header.php';
                     value="<?php echo htmlspecialchars($dados['complemento'] ?? ''); ?>">
             </div>
         </div>
-
-
-
         <div class="form-group">
             <input type="text" id="cidade" name="cidade" required readonly
                 placeholder="Cidade"
                 value="<?php echo htmlspecialchars($dados['cidade'] ?? ''); ?>">
         </div>
-
-
         <!-- Dados Profissionais -->
-        <div class="form-section">
-            <h3>Dados Profissionais</h3>
-            <div class="form-group">
-                <select id="tipo_usuario" name="tipo_usuario" required onchange="toggleEspecialidade()">
-                    <option value="">Selecione...</option>
-                    <option value="medico" <?php echo ($dados['tipo_usuario'] ?? '') === 'medico' ? 'selected' : ''; ?>>Médico</option>
-                    <option value="especialista" <?php echo ($dados['tipo_usuario'] ?? '') === 'especialista' ? 'selected' : ''; ?>>Especialista</option>
-                </select>
-            </div>
+        <div class="form-group" id="escolaridade-container">
+    <select id="escolaridade" name="escolaridade" required>
+        <option value="" disabled selected>Selecione sua escolaridade</option>
+        <option value="fundamental_completo" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'fundamental_completo' ? 'selected' : ''; ?>>Fundamental Completo</option>
+        <option value="medio_completo" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'medio_completo' ? 'selected' : ''; ?>>Médio Completo</option>
+        <option value="superior_completo" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'superior_completo' ? 'selected' : ''; ?>>Superior Completo</option>
+    </select>
+</div>
 
-            <div class="form-group">
-                <select id="especialidade_id" name="especialidade_id" required>
-                    <option value="">Selecione...</option>
-                    <?php foreach ($especialidades as $especialidade): ?>
-                        <option value="<?= $especialidade['id'] ?>"
-                            data-tipo="medico"
-                            <?= ($dados['especialidade_id'] ?? '') == $especialidade['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($especialidade['nome']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                    <?php foreach ($tiposExame as $exame): ?>
-                        <option value="<?= $exame['id'] ?>"
-                            data-tipo="especialista"
-                            style="display:none;"
-                            <?= ($dados['especialidade_id'] ?? '') == $exame['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($exame['nome']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="form-group" id="linkedin-container">
+                <input type="text" id="linkedin" name="linkedin"
+                    placeholder="Link do linkedin"
+                    value="<?php echo htmlspecialchars($dados['linkedin'] ?? ''); ?>">
             </div>
-
-            <div class="form-group" id="crm-container">
-                <input type="text" id="crm" name="crm"
-                    placeholder="CRM (apenas números)"
-                    value="<?php echo htmlspecialchars($dados['crm'] ?? ''); ?>">
-                <small class="input-hint">Apenas para médicos</small>
+            <div class="form-group" id="github-container">
+                <input type="text" id="github" name="github"
+                    placeholder="Link do github"
+                    value="<?php echo htmlspecialchars($dados['github'] ?? ''); ?>">
+            </div>
+            <div class="form-group" id="resumo-container">
+                <input type="text" id="resumo" name="resumo"
+                    placeholder="Resumo da carreira"
+                    value="<?php echo htmlspecialchars($dados['resumo'] ?? ''); ?>">
+            </div>
+            <div class="form-group" id="experiencias-container">
+                <input type="text" id="experiencias" name="experiencias"
+                    placeholder="Experiencias Profissionais"
+                    value="<?php echo htmlspecialchars($dados['experiencias'] ?? ''); ?>">
             </div>
         </div>
 
@@ -183,56 +131,15 @@ require_once VIEWS_PATH . 'shared/header.php';
     </form>
 
     <div class="auth-links">
-        <a href="<?php echo BASE_URL; ?>views/auth/login.php">Já tem uma conta? Faça login</a>
+        <a href="/login.php">Já tem uma conta? Faça login</a>
     </div>
 </div>
 
 <script>
-    function toggleEspecialidade() {
-        const tipoUsuario = document.getElementById('tipo_usuario').value;
-        const selectEspecialidade = document.getElementById('especialidade_id');
-        const opcoes = selectEspecialidade.options;
-        const crmContainer = document.getElementById('crm-container');
-
-        // Reset para o placeholder
-        selectEspecialidade.value = '';
-
-        if (tipoUsuario === 'medico') {
-            crmContainer.style.display = 'block';
-
-            // Mostra opções de médico, esconde de especialista
-            for (let i = 0; i < opcoes.length; i++) {
-                if (opcoes[i].dataset.tipo === 'medico') {
-                    opcoes[i].style.display = '';
-                } else if (opcoes[i].dataset.tipo === 'especialista') {
-                    opcoes[i].style.display = 'none';
-                }
-            }
-        } else if (tipoUsuario === 'especialista') {
-            crmContainer.style.display = 'none';
-
-            // Mostra opções de especialista, esconde de médico
-            for (let i = 0; i < opcoes.length; i++) {
-                if (opcoes[i].dataset.tipo === 'especialista') {
-                    opcoes[i].style.display = '';
-                } else if (opcoes[i].dataset.tipo === 'medico') {
-                    opcoes[i].style.display = 'none';
-                }
-            }
-        } else {
-            // Esconde todas as opções específicas se nenhum tipo for selecionado
-            for (let i = 0; i < opcoes.length; i++) {
-                if (opcoes[i].dataset.tipo) {
-                    opcoes[i].style.display = 'none';
-                }
-            }
-            crmContainer.style.display = 'none';
-        }
-    }
-
+   
     // Inicializa o estado ao carregar a página
     document.addEventListener('DOMContentLoaded', function() {
-        toggleEspecialidade();
+        
     });
 
     document.getElementById('email').addEventListener('blur', function() {
@@ -340,40 +247,6 @@ require_once VIEWS_PATH . 'shared/header.php';
             // Se o CEP tem 8 dígitos mas o logradouro não foi preenchido
             erros.push('CEP não encontrado ou endereço não preenchido');
             camposInvalidos.push(cepInput);
-        }
-
-        // Validação do número
-        const numeroInput = document.getElementById('numero');
-        const numero = numeroInput.value.trim();
-        if (numero.length === 0) {
-            erros.push('Por favor, informe o número');
-            camposInvalidos.push(numeroInput);
-        }
-
-        // Validação do tipo de usuário
-        const tipoUsuarioInput = document.getElementById('tipo_usuario');
-        const tipoUsuario = tipoUsuarioInput.value;
-        if (!tipoUsuario) {
-            erros.push('Selecione um tipo de usuário');
-            camposInvalidos.push(tipoUsuarioInput);
-        }
-
-        // Validação da especialidade
-        const especialidadeInput = document.getElementById('especialidade_id');
-        const especialidade = especialidadeInput.value;
-        if (!especialidade) {
-            erros.push('Selecione uma especialidade/tipo de exame');
-            camposInvalidos.push(especialidadeInput);
-        }
-
-        // Validação do CRM para médicos
-        if (tipoUsuario === 'medico') {
-            const crmInput = document.getElementById('crm');
-            const crm = crmInput.value.trim();
-            if (!crm) {
-                erros.push('CRM é obrigatório para médicos');
-                camposInvalidos.push(crmInput);
-            }
         }
 
         // Validação da senha
@@ -510,5 +383,5 @@ if (!empty($_SESSION['erros_cadastro'])) {
     echo '</pre>';
 }
 
-require_once VIEWS_PATH . 'shared/footer.php';
+require_once __DIR__ . '/rodape.php';
 ?>
