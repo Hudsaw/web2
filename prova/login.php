@@ -12,30 +12,38 @@ if (session_status() === PHP_SESSION_NONE) {
 $erro = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = strtolower(trim($_POST['email'])); 
+    $email = strtolower(trim($_POST['email']));
     $senha = $_POST['senha'];
-    
+
     try {
         $pdo = Database::getInstance();
-        $stmt = $pdo->prepare("SELECT id, nome, senha, tipo FROM curriculo WHERE LOWER(email) = ?");
+        $stmt = $pdo->prepare("SELECT id, nome, senha FROM curriculo WHERE LOWER(email) = ?");
         $stmt->execute([$email]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($usuario) {
+            error_log("Hash armazenado: " . $usuario['senha']);
+            error_log("Senha fornecida: " . $senha);
             if (password_verify($senha, $usuario['senha'])) {
                 // Regenera o ID da sessão para prevenir fixation
                 session_regenerate_id(true);
-                
+                error_log("Senha verificada com sucesso");
+
+
                 $_SESSION['id'] = $usuario['id'];
                 $_SESSION['nome'] = $usuario['nome'];
-                
+
+                // Define um redirecionamento padrão seguro
+                $redirect = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : BASE_URL . 'index.php';
+                unset($_SESSION['redirect_url']);
+
                 header('Location: ' . $redirect);
                 exit();
             } else {
-                $erro = "Credenciais inválidas"; 
+                $erro = "Credenciais inválidas";
             }
         } else {
-            $erro = "Credenciais inválidas"; 
+            $erro = "Credenciais inválidas";
         }
     } catch (PDOException $e) {
         error_log("Erro de login: " . $e->getMessage());
@@ -49,18 +57,18 @@ require_once __DIR__ . '/header.php';
 
 <div class="apresentacao">
     <h1 class="auth-title">Acesse sua conta</h1>
-    
+
     <?php if ($erro): ?>
         <div class="alert alert-error">
             <?php echo htmlspecialchars($erro); ?>
         </div>
     <?php endif; ?>
-    
+
     <form class="auth-form" method="POST">
         <div class="form-group">
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required 
-                   value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+            <input type="email" id="email" name="email" required
+                value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="senha">Senha</label>
@@ -71,17 +79,17 @@ require_once __DIR__ . '/header.php';
         </button>
     </form>
     <div class="auth-links">
-        <a href="<?php echo BASE_URL;?>resetar.php">
+        <a href="<?php echo BASE_URL; ?>resetar.php">
             <i class="fas fa-key"></i> Esqueceu sua senha?
         </a>
         <span> | </span>
-        <a href="<?php echo BASE_URL;?>cadastro.php">
+        <a href="<?php echo BASE_URL; ?>cadastro.php">
             <i class="fas fa-user-plus"></i> Criar nova conta
         </a>
     </div>
 </div>
 
-<?php 
+<?php
 // Inclui o rodape.php
 require_once __DIR__ . '/rodape.php';
 ?>

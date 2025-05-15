@@ -11,15 +11,13 @@ $nomeUsuario = 'Visitante';
 $usuarioLogado = false;
 
 // Verifica se o usuário está logado
-if (isset($_SESSION['usuario_id'])) {
+if (isset($_SESSION['id'])) {
     $usuarioLogado = true;
-    $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Usuário';
+    $nomeUsuario = $_SESSION['nome'] ?? 'Usuário';
 
     // Conexão com o banco para notificações
     try {
         $pdo = Database::getInstance();
-        $stmt->execute([$_SESSION['usuario_id']]);
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         error_log("Erro ao buscar notificações: " . $e->getMessage());
     }

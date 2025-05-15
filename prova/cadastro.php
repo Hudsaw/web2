@@ -6,20 +6,36 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
-$erros = $_SESSION['erros_cadastro'] ?? [];
-$dados = $_SESSION['dados_cadastro'] ?? [];
+// Limpeza completa da sessão relacionada ao cadastro
 unset($_SESSION['erros_cadastro']);
 unset($_SESSION['dados_cadastro']);
+unset($_SESSION['erro_geral']);
 
+// Redireciona se já estiver logado (opcional)
+if (isset($_SESSION['usuario_id'])) {
+    header('Location: ' . BASE_URL . 'index.php');
+    exit();
+}
+
+// Recupera erros e dados da sessão
+$erros = $_SESSION['erros_cadastro'] ?? [];
+$dados = $_SESSION['dados_cadastro'] ?? [];
+
+// Exibir erros se existirem
+if (!empty($erros)) {
+    echo '<div class="alert alert-danger">';
+    foreach ($erros as $erro) {
+        echo '<p>' . $erro . '</p>';
+    }
+    echo '</div>';
+}
 
 require_once __DIR__ . '/header.php';
 ?>
 
 <div class="apresentacao">
     <h1 class="auth-title">Crie sua conta</h1>
-    <form class="auth-form" id="form-cadastro" method="POST" action="<?php echo BASE_URL; ?>AuthController.php?action=register">
-        <!-- Dados Pessoais -->
+    <form class="auth-form" method="POST" action="<?php echo BASE_URL; ?>AuthController.php?action=register"> <!-- Dados Pessoais -->
         <div class="form-section">
             <h3>Dados Pessoais</h3>
             <div class="form-group">
@@ -63,7 +79,7 @@ require_once __DIR__ . '/header.php';
                 <small class="cep-info" style="color: var(--erro);"></small>
             </div>
             <div class="form-group">
-                <input type="text" id="logradouro" name="logradouro" required readonly
+                <input type="text" id="logradouro" name="logradouro" required readonly disabled
                     placeholder="Logradouro"
                     value="<?php echo htmlspecialchars($dados['logradouro'] ?? ''); ?>">
             </div>
@@ -74,7 +90,7 @@ require_once __DIR__ . '/header.php';
             </div>
         </div>
         <div class="form-group">
-            <input type="text" id="cidade" name="cidade" required readonly
+            <input type="text" id="cidade" name="cidade" required readonly disabled
                 placeholder="Cidade"
                 value="<?php echo htmlspecialchars($dados['cidade'] ?? ''); ?>">
         </div>
@@ -82,9 +98,9 @@ require_once __DIR__ . '/header.php';
         <div class="form-group" id="escolaridade-container">
             <select id="escolaridade" name="escolaridade" required>
                 <option value="" disabled selected>Selecione sua escolaridade</option>
-                <option value="fundamental" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'fundamental' ? 'selected' : ''; ?>>Fundamental Completo</option>
-                <option value="medio" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'medio' ? 'selected' : ''; ?>>Médio Completo</option>
-                <option value="superior" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'superior' ? 'selected' : ''; ?>>Superior Completo</option>
+                <option value="fundamental" <?php echo (isset($dados['escolaridade'])) && $dados['escolaridade'] === 'fundamental' ? 'selected' : ''; ?>>Fundamental Completo</option>
+                <option value="medio" <?php echo (isset($dados['escolaridade'])) && $dados['escolaridade'] === 'medio' ? 'selected' : ''; ?>>Médio Completo</option>
+                <option value="superior" <?php echo (isset($dados['escolaridade'])) && $dados['escolaridade'] === 'superior' ? 'selected' : ''; ?>>Superior Completo</option>
             </select>
         </div>
 
@@ -124,7 +140,7 @@ require_once __DIR__ . '/header.php';
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" id="submit-btn">
             <i class="fas fa-user-plus"></i> Criar Conta
         </button>
     </form>
@@ -332,39 +348,28 @@ require_once __DIR__ . '/header.php';
     });
 
     // Evento submit do formulário
-    document.getElementById('form-cadastro').addEventListener('submit', function(e) {
-        const erros = validarFormulario();
-        const senha = document.getElementById('senha').value;
-        const confirmarSenha = document.getElementById('confirmar_senha').value;
-
-        if (senha !== confirmarSenha) {
-            e.preventDefault();
-            alert('As senhas não coincidem');
-            return;
-        }
-
-        const errosSenha = validarForcaSenha(senha);
-        if (errosSenha.length > 0) {
-            e.preventDefault();
-            alert('Problemas com a senha:\n\n- ' + errosSenha.join('\n- '));
-            return;
-        }
-
-        if (erros.length > 0) {
-            e.preventDefault();
-
-            // Rolagem até o primeiro erro
-            const primeiroCampoInvalido = document.querySelector('.campo-invalido');
-            if (primeiroCampoInvalido) {
-                primeiroCampoInvalido.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }
-
-            alert('Por favor, corrija os seguintes erros:\n\n- ' + erros.join('\n- '));
-        }
-    });
+    document.querySelector('.auth-form').addEventListener('submit', function(e) {
+    // Validações básicas
+    const senha = document.getElementById('senha').value;
+    const confirmarSenha = document.getElementById('confirmar_senha').value;
+    
+    if (senha !== confirmarSenha) {
+        e.preventDefault();
+        alert('As senhas não coincidem');
+        return;
+    }
+    
+    if (senha.length < 8) {
+        e.preventDefault();
+        alert('A senha deve ter pelo menos 8 caracteres');
+        return;
+    }
+    
+    // Mostra loading no botão
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+    submitBtn.disabled = true;
+});
 </script>
 
 <?php
