@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/header.php';
 ?>
 
-<div class="auth-container">
+<div class="apresentacao">
     <h1 class="auth-title">Acesse sua conta</h1>
     
     <?php if ($erro): ?>
@@ -71,11 +71,11 @@ require_once __DIR__ . '/header.php';
         </button>
     </form>
     <div class="auth-links">
-        <a href="resetar.php">
+        <a href="<?php echo BASE_URL;?>resetar.php">
             <i class="fas fa-key"></i> Esqueceu sua senha?
         </a>
         <span> | </span>
-        <a href="cadastro.php">
+        <a href="<?php echo BASE_URL;?>cadastro.php">
             <i class="fas fa-user-plus"></i> Criar nova conta
         </a>
     </div>

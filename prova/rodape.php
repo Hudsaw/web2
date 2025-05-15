@@ -2,14 +2,14 @@
         <h2>
         <table>
                 <tr>
-                    <td class="icon"><a href="http://bit.ly/hudsawlkd" target="_blank">
-                        <img src="assets/icons/001-linkedin.png"></a></td>    
-                    <td class="icon"><a href="http://github.com/Hudsaw" target="_blank">
-                        <img src="assets/icons/002-github.png"></a></td>
-                    <td class="icon"><a href="https://wa.me/5547997907819?text=Olá,%20vi%20seu%20currículo,%20podemos%20conversar?" target="_blank">
-                        <img src="assets/icons/003-whatsup.png"></a></td>
+                    <td class="icon"><a href="https://br.linkedin.com/" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=8808&format=png&color=000000"></a></td>    
+                    <td class="icon"><a href="https://github.com/" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=12599&format=png&color=000000"></a></td>
+                    <td class="icon"><a href="https://www.whatsapp.com/?lang=pt_BR" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=16733&format=png&color=000000"></a></td>
                     <td class="icon"><a href="mailto:hudsonrb@gmail.com" target="_blank">
-                        <img src="assets/icons/004-email.png"></a></td>
+                        <img src="https://img.icons8.com/?size=100&id=12623&format=png&color=000000"></a></td>
                 </tr>                    
             </table>
             </h2>

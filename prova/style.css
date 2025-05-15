@@ -1,0 +1,158 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+header, footer {
+    background-color: #2c63ca;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+}
+
+.secao table {
+    margin: 0 auto;
+}
+
+.secao a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.secao a:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-top: 40px;
+}
+
+form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+label {
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.icon{
+    height: 30px;
+    width: 30px;
+}
+
+.apresentacao {
+    text-align: center;
+    background-color: #ffffff;
+    margin-bottom: 250px;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    color: #2c63ca;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    color: #333;
+    margin: 10px 0;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #007BFF;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.vantagens {
+    margin-top: 50px;
+}
+
+.vantagens h2 {
+    color: #2c63ca;
+    margin-bottom: 20px;
+}
+
+.vantagens ul {
+    list-style: none;
+    padding: 0;
+    font-size: 1.1em;
+}
+
+.vantagens li {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+@media (max-width: 600px) {
+    form {
+        padding: 20px;
+    }
+
+    .secao table, .secao td {
+        display: block;
+        text-align: center;
+        width: 100%;
+    }
+
+    .secao a {
+        display: inline-block;
+        margin: 10px 5px;
+    }
+}

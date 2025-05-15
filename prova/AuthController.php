@@ -12,43 +12,20 @@ class AuthController
         $this->userModel = new UserModel($pdo);
     }
 
-    public function handleRequest()
-    {
-        // Ativar exibição de erros para depuração
-        error_reporting(E_ALL);
-        ini_set('display_errors', 1);
-
-        $action = $_GET['action'] ?? '';
-
-        switch ($action) {
-            case 'register':
-                $this->register();
-                break;
-            case 'logout':
-                $this->logout();
-                break;
-            default:
-                $_SESSION['erro_geral'] = "Ação inválida";
-                header('Location: ' . '/index.php');
-                exit();
-        }
-    }
-
     public function register()
     {
 
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
+        error_log("iniciando registro");
         // Verifica se é uma requisição POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['erro_geral'] = "Método inválido";
-            header('Location: ' . '/cadastro.php');
+            header('Location: ' . 'cadastro.php');
             exit();
         }
 
+        error_log("antes try");
         try {
+
             // Processa os dados do formulário
             $userData = [
                 'nome' => trim($_POST['nome']),
@@ -56,20 +33,22 @@ class AuthController
                 'email' => filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL),
                 'telefone' => preg_replace('/[^0-9]/', '', $_POST['telefone'] ?? ''),
                 'cep' => preg_replace('/[^0-9]/', '', $_POST['cep']),
-                'complemento' => $_POST['numero'] ?? '',
+                'complemento' => $_POST['complemento'] ?? '',
                 'escolaridade' => trim($_POST['escolaridade']),
                 'resumo' => trim($_POST['resumo']),
                 'senha' => $_POST['senha'],
+                'linkedin' => trim($_POST['linkedin']),
+                'github' => trim($_POST['github']),
                 'confirmar_senha' => $_POST['confirmar_senha']
             ];
-
+            error_log("vai validar");
             // Validação
             $errors = $this->validateRegistration($userData);
 
             if (!empty($errors)) {
                 $_SESSION['erros_cadastro'] = $errors;
                 $_SESSION['dados_cadastro'] = $userData;
-                header('Location: ' . '/cadastro.php');
+                header('Location: ' . 'cadastro.php');
                 exit();
             }
 
@@ -77,7 +56,7 @@ class AuthController
             if ($this->userModel->emailExists($userData['email'])) {
                 $_SESSION['erros_cadastro'] = ["Este e-mail já está cadastrado"];
                 $_SESSION['dados_cadastro'] = $userData;
-                header('Location: ' . '/cadastro.php');
+                header('Location: ' . 'cadastro.php');
                 exit();
             }
 
@@ -91,17 +70,17 @@ class AuthController
             $_SESSION['usuario_id'] = $userId;
             $_SESSION['usuario_nome'] = $userData['nome'];
 
-            header('Location: ' $redirectUrl);
+            header('Location: ' . 'index.php');
             exit();
         } catch (PDOException $e) {
             error_log("Erro PDO no registro: " . $e->getMessage());
             $_SESSION['erro_geral'] = "Erro no banco de dados. Por favor, tente novamente.";
-            header('Location: '. '/cadastro.php');
+            header('Location: '. 'cadastro.php');
             exit();
         } catch (Exception $e) {
             error_log("Erro geral no registro: " . $e->getMessage());
             $_SESSION['erro_geral'] = "Erro ao processar cadastro. Por favor, tente novamente.";
-            header('Location: ' . '/cadastro.php');
+            header('Location: ' . 'cadastro.php');
             exit();
         }
     }

@@ -16,9 +16,9 @@ unset($_SESSION['dados_cadastro']);
 require_once __DIR__ . '/header.php';
 ?>
 
-<div class="auth-container">
+<div class="apresentacao">
     <h1 class="auth-title">Crie sua conta</h1>
-    <form class="auth-form" id="form-cadastro" method="POST" action="/AuthController.php?action=register">
+    <form class="auth-form" id="form-cadastro" method="POST" action="<?php echo BASE_URL;?>AuthController.php?action=register">
         <!-- Dados Pessoais -->
         <div class="form-section">
             <h3>Dados Pessoais</h3>
@@ -68,7 +68,7 @@ require_once __DIR__ . '/header.php';
                     value="<?php echo htmlspecialchars($dados['logradouro'] ?? ''); ?>">
             </div>
             <div class="form-group">
-                <input type="text" id="numero" name="numero" required
+                <input type="text" id="complemento" name="complemento" required
                     placeholder="Número, bloco, apartamento"
                     value="<?php echo htmlspecialchars($dados['complemento'] ?? ''); ?>">
             </div>
@@ -80,34 +80,33 @@ require_once __DIR__ . '/header.php';
         </div>
         <!-- Dados Profissionais -->
         <div class="form-group" id="escolaridade-container">
-    <select id="escolaridade" name="escolaridade" required>
-        <option value="" disabled selected>Selecione sua escolaridade</option>
-        <option value="fundamental_completo" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'fundamental_completo' ? 'selected' : ''; ?>>Fundamental Completo</option>
-        <option value="medio_completo" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'medio_completo' ? 'selected' : ''; ?>>Médio Completo</option>
-        <option value="superior_completo" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'superior_completo' ? 'selected' : ''; ?>>Superior Completo</option>
-    </select>
-</div>
+            <select id="escolaridade" name="escolaridade" required>
+                <option value="" disabled selected>Selecione sua escolaridade</option>
+                <option value="fundamental" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'fundamental' ? 'selected' : ''; ?>>Fundamental Completo</option>
+                <option value="medio" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'medio' ? 'selected' : ''; ?>>Médio Completo</option>
+                <option value="superior" <?php echo (isset($dados['escolaridade']) && $dados['escolaridade']) === 'superior' ? 'selected' : ''; ?>>Superior Completo</option>
+            </select>
+        </div>
 
-            <div class="form-group" id="linkedin-container">
-                <input type="text" id="linkedin" name="linkedin"
-                    placeholder="Link do linkedin"
-                    value="<?php echo htmlspecialchars($dados['linkedin'] ?? ''); ?>">
-            </div>
-            <div class="form-group" id="github-container">
-                <input type="text" id="github" name="github"
-                    placeholder="Link do github"
-                    value="<?php echo htmlspecialchars($dados['github'] ?? ''); ?>">
-            </div>
-            <div class="form-group" id="resumo-container">
-                <input type="text" id="resumo" name="resumo"
-                    placeholder="Resumo da carreira"
-                    value="<?php echo htmlspecialchars($dados['resumo'] ?? ''); ?>">
-            </div>
-            <div class="form-group" id="experiencias-container">
-                <input type="text" id="experiencias" name="experiencias"
-                    placeholder="Experiencias Profissionais"
-                    value="<?php echo htmlspecialchars($dados['experiencias'] ?? ''); ?>">
-            </div>
+        <div class="form-group" id="linkedin-container">
+            <input type="text" id="linkedin" name="linkedin"
+                placeholder="Link do linkedin"
+                value="<?php echo htmlspecialchars($dados['linkedin'] ?? ''); ?>">
+        </div>
+        <div class="form-group" id="github-container">
+            <input type="text" id="github" name="github"
+                placeholder="Link do github"
+                value="<?php echo htmlspecialchars($dados['github'] ?? ''); ?>">
+        </div>
+        <div class="form-group" id="resumo-container">
+            <input type="text" id="resumo" name="resumo"
+                placeholder="Resumo da carreira"
+                value="<?php echo htmlspecialchars($dados['resumo'] ?? ''); ?>">
+        </div>
+        <div class="form-group" id="experiencias-container">
+            <input type="text" id="experiencias" name="experiencias"
+                placeholder="Experiencias Profissionais"
+                value="<?php echo htmlspecialchars($dados['experiencias'] ?? ''); ?>">
         </div>
 
         <!-- Segurança -->
@@ -131,15 +130,13 @@ require_once __DIR__ . '/header.php';
     </form>
 
     <div class="auth-links">
-        <a href="/login.php">Já tem uma conta? Faça login</a>
+        <a href="<?php echo BASE_URL;?>login.php">Já tem uma conta? Faça login</a>
     </div>
 </div>
 
 <script>
-   
     // Inicializa o estado ao carregar a página
     document.addEventListener('DOMContentLoaded', function() {
-        
     });
 
     document.getElementById('email').addEventListener('blur', function() {

@@ -32,7 +32,7 @@ if (isset($_SESSION['usuario_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curriculum Premium</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -48,12 +48,12 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
                 
                 <?php if ($usuarioLogado): ?>
-                    <a href="/AuthController.php?action=logout" class="btn-logout">
+                    <a href="<?php echo BASE_URL;?>AuthController.php?action=logout" class="btn-logout">
                         <span class="btn-text">Sair</span>
                     </a>
 
                 <?php else: ?>
-                    <a href="/login.php" class="btn-login">
+                    <a href="<?php echo BASE_URL;?>login.php" class="btn-login">
                         <i class="fas fa-sign-in-alt"></i> <span class="btn-text">Login</span>
                     </a>
                 <?php endif; ?>
@@ -63,3 +63,5 @@ if (isset($_SESSION['usuario_id'])) {
         </div>
     </header>
     <main>
+        
+    <?php require_once __DIR__ . '/rodape.php'; ?>

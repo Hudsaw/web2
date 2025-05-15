@@ -7,18 +7,7 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
     
-	<header>
-		<div class="secao">
-            <table>
-            <tr>
-                <td><a href="#pessoais">Dados Pessoais</a></td>
-                <td><a href="#formacao">Formação Acadêmica</a></td>
-                <td><a href="#profissionais">Experiências Profissionais</a></td>
-                <td><a href="#adicionais">Informações Adicionais</a></td>
-            </tr>
-            </table>
-		</div>
-    </header>
+    <?php require_once __DIR__ . '/header.php'; ?>
 
 	<body>
         <div class="secao">
@@ -152,3 +141,5 @@
     </body>  
     		
 </html>
+
+<?php require_once __DIR__ . '/rodape.php'; ?>
