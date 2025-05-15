@@ -39,7 +39,10 @@ if (isset($_SESSION['usuario_id'])) {
     <header class="header">
         <div class="header-container">
     
+            <div class="logo">
                 <span class="logo-text">Curriculum Premium</span>
+                <img  src="https://img.icons8.com/?size=100&id=45588&format=png&color=FFFFFF">
+            </div>
 
             <nav class="nav-user">
 
