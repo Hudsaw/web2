@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     try {
         $pdo = Database::getInstance();
-        $stmt = $pdo->prepare("SELECT id, nome, senha, tipo FROM usuarios WHERE LOWER(email) = ?");
+        $stmt = $pdo->prepare("SELECT id, nome, senha, tipo FROM curriculo WHERE LOWER(email) = ?");
         $stmt->execute([$email]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -26,8 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Regenera o ID da sessão para prevenir fixation
                 session_regenerate_id(true);
                 
-                $_SESSION['usuario_id'] = $usuario['id'];
-                $_SESSION['usuario_nome'] = $usuario['nome'];
+                $_SESSION['id'] = $usuario['id'];
+                $_SESSION['nome'] = $usuario['nome'];
                 
                 header('Location: ' . $redirect);
                 exit();

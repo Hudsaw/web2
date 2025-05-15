@@ -18,7 +18,7 @@ require_once __DIR__ . '/header.php';
 
 <div class="apresentacao">
     <h1 class="auth-title">Crie sua conta</h1>
-    <form class="auth-form" id="form-cadastro" method="POST" action="<?php echo BASE_URL;?>AuthController.php?action=register">
+    <form class="auth-form" id="form-cadastro" method="POST" action="<?php echo BASE_URL; ?>AuthController.php?action=register">
         <!-- Dados Pessoais -->
         <div class="form-section">
             <h3>Dados Pessoais</h3>
@@ -130,14 +130,13 @@ require_once __DIR__ . '/header.php';
     </form>
 
     <div class="auth-links">
-        <a href="<?php echo BASE_URL;?>login.php">Já tem uma conta? Faça login</a>
+        <a href="<?php echo BASE_URL; ?>login.php">Já tem uma conta? Faça login</a>
     </div>
 </div>
 
 <script>
     // Inicializa o estado ao carregar a página
-    document.addEventListener('DOMContentLoaded', function() {
-    });
+    document.addEventListener('DOMContentLoaded', function() {});
 
     document.getElementById('email').addEventListener('blur', function() {
         if (!validarEmail(this.value)) {
@@ -239,10 +238,6 @@ require_once __DIR__ . '/header.php';
 
         if (cep.length !== 8) {
             erros.push('CEP deve conter 8 dígitos');
-            camposInvalidos.push(cepInput);
-        } else if (logradouro.length === 0) {
-            // Se o CEP tem 8 dígitos mas o logradouro não foi preenchido
-            erros.push('CEP não encontrado ou endereço não preenchido');
             camposInvalidos.push(cepInput);
         }
 
@@ -373,12 +368,5 @@ require_once __DIR__ . '/header.php';
 </script>
 
 <?php
-
-if (!empty($_SESSION['erros_cadastro'])) {
-    echo '<pre>';
-    print_r($_SESSION['erros_cadastro']);
-    echo '</pre>';
-}
-
 require_once __DIR__ . '/rodape.php';
 ?>

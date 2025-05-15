@@ -39,7 +39,7 @@ class AuthController
                 'senha' => $_POST['senha'],
                 'linkedin' => trim($_POST['linkedin']),
                 'github' => trim($_POST['github']),
-                'confirmar_senha' => $_POST['confirmar_senha']
+                'experiencias' => trim($_POST['experiencias'] ?? '')
             ];
             error_log("vai validar");
             // Validação
@@ -47,6 +47,13 @@ class AuthController
 
             if (!empty($errors)) {
                 $_SESSION['erros_cadastro'] = $errors;
+                $_SESSION['dados_cadastro'] = $userData;
+                header('Location: ' . 'cadastro.php');
+                exit();
+            }
+
+            if ($this->userModel->cpfExists($userData['cpf'])) {
+                $_SESSION['erros_cadastro'] = ["Este CPF já está cadastrado"];
                 $_SESSION['dados_cadastro'] = $userData;
                 header('Location: ' . 'cadastro.php');
                 exit();
@@ -75,7 +82,7 @@ class AuthController
         } catch (PDOException $e) {
             error_log("Erro PDO no registro: " . $e->getMessage());
             $_SESSION['erro_geral'] = "Erro no banco de dados. Por favor, tente novamente.";
-            header('Location: '. 'cadastro.php');
+            header('Location: ' . 'cadastro.php');
             exit();
         } catch (Exception $e) {
             error_log("Erro geral no registro: " . $e->getMessage());
