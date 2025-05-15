@@ -24,11 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($usuario) {
             error_log("Hash armazenado: " . $usuario['senha']);
             error_log("Senha fornecida: " . $senha);
-            if (password_verify($senha, $usuario['senha'])) {
+            if (strlen($usuario['senha']) === 64 && ctype_xdigit($usuario['senha'])) {
+                $isValid = hash('sha256', $senha) === $usuario['senha'];
+            } else {
+                // Caso contrário, usa password_verify para BCrypt
+                $isValid = password_verify($senha, $usuario['senha']);
+            }
+
+            if ($isValid) {
                 // Regenera o ID da sessão para prevenir fixation
                 session_regenerate_id(true);
                 error_log("Senha verificada com sucesso");
-
 
                 $_SESSION['id'] = $usuario['id'];
                 $_SESSION['nome'] = $usuario['nome'];

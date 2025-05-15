@@ -20,6 +20,11 @@ class AuthController
     public function register()
     {
 
+        // Limpa sessões antigas primeiro
+        unset($_SESSION['erros_cadastro']);
+        unset($_SESSION['dados_cadastro']);
+        unset($_SESSION['erro_geral']);
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $_SESSION['erro_geral'] = "Método inválido";
             header('Location: ' . BASE_URL . 'cadastro.php');
@@ -36,17 +41,17 @@ class AuthController
                 'complemento' => $_POST['complemento'] ?? '',
                 'escolaridade' => trim($_POST['escolaridade']),
                 'resumo' => trim($_POST['resumo']),
-                'senha' => $_POST['senha'], 
+                'senha' => $_POST['senha'],
                 'linkedin' => trim($_POST['linkedin']),
                 'github' => trim($_POST['github']),
                 'experiencias' => trim($_POST['experiencias'] ?? '')
             ];
 
-            // Validação
+            // Validações básicas
             $errors = [];
             if (empty($userData['nome'])) $errors[] = "Nome é obrigatório";
             if (empty($userData['cpf']) || strlen($userData['cpf']) !== 11) $errors[] = "CPF inválido";
-            // Adicione outras validações conforme necessário
+            if (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) $errors[] = "E-mail inválido";
 
             if (!empty($errors)) {
                 $_SESSION['erros_cadastro'] = $errors;
@@ -55,8 +60,9 @@ class AuthController
                 exit();
             }
 
+            // Verifica se CPF já existe
             if ($this->userModel->cpfExists($userData['cpf'])) {
-                $_SESSION['erros_cadastro'] = ["Este CPF já está cadastrado"];
+                $_SESSION['erros_cadastro'] = ["CPF já cadastrado"];
                 $_SESSION['dados_cadastro'] = $userData;
                 header('Location: ' . BASE_URL . 'curriculo.php');
                 exit();
@@ -64,7 +70,7 @@ class AuthController
 
             // Verifica se email já existe
             if ($this->userModel->emailExists($userData['email'])) {
-                $_SESSION['erros_cadastro'] = ["Este e-mail já está cadastrado"];
+                $_SESSION['erros_cadastro'] = ["E-mail já cadastrado"];
                 $_SESSION['dados_cadastro'] = $userData;
                 header('Location: ' . BASE_URL . 'curriculo.php');
                 exit();
@@ -79,13 +85,11 @@ class AuthController
 
             $_SESSION['usuario_id'] = $userId;
             $_SESSION['usuario_nome'] = $userData['nome'];
-            
+
             header('Location: ' . BASE_URL . 'index.php');
             exit();
-
         } catch (Exception $e) {
-            error_log("Erro no registro: " . $e->getMessage());
-            $_SESSION['erro_geral'] = "Erro ao cadastrar. Tente novamente.";
+            $_SESSION['erro_geral'] = "Erro ao cadastrar: " . $e->getMessage();
             header('Location: ' . BASE_URL . 'cadastro.php');
             exit();
         }
@@ -104,11 +108,10 @@ class AuthController
 if (isset($_GET['action'])) {
     $controller = new AuthController();
     $action = $_GET['action'];
-    
+
     if ($action === 'register') {
         $controller->register();
     } elseif ($action === 'logout') {
         $controller->logout();
     }
 }
-

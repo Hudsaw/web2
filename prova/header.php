@@ -38,8 +38,10 @@ if (isset($_SESSION['id'])) {
         <div class="header-container">
     
             <div class="logo">
-                <span class="logo-text">Curriculum Premium</span>
-                <img  src="https://img.icons8.com/?size=100&id=45588&format=png&color=FFFFFF">
+                <a href="<?php echo BASE_URL; ?>" class="logo">
+                    <img src="https://img.icons8.com/?size=100&id=45588&format=png&color=FFFFFF" alt="Logo" class="logo-img" />
+                    <span class="logo-text">Curriculum Premium</span>
+                </a>
             </div>
 
             <nav class="nav-user">
@@ -55,7 +57,7 @@ if (isset($_SESSION['id'])) {
 
                 <?php else: ?>
                     <a href="<?php echo BASE_URL;?>login.php" class="btn-login">
-                        <i class="fas fa-sign-in-alt"></i> <span class="btn-text">Login</span>
+                        <span class="btn-text">Login</span>
                     </a>
                 <?php endif; ?>
 
