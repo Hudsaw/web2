@@ -1,6 +1,5 @@
 <?php
-
-define('BASE_URL', 'http://localhost/web2/prova/');
+require_once 'config.php';
 
 class Database {
     private static $instance = null;
@@ -8,11 +7,10 @@ class Database {
 
     private function __construct() {
         try {
- 
-     $this->pdo = new PDO(
-                'mysql:host=localhost;dbname=curriculo', 
-                'root', 
-                ''
+            $this->pdo = new PDO(
+                'mysql:host='.DB_HOST.';dbname='.DB_NAME, 
+                DB_USER, 
+                DB_PASS
             );
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {

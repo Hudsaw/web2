@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /prova/
+
+# Front Controller para ações principais
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?action=$1 [L,QSA]
+
+# Rotas amigáveis para currículos
+RewriteRule ^curriculo/([0-9]+)$ curriculo.php?id=$1 [L]
