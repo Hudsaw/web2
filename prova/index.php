@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once 'constants.php';
 require_once 'Controller.php';
 
 // Roteamento básico
@@ -11,6 +11,9 @@ try {
     switch ($action) {
         case 'home':
             $controller->home();
+            break;
+        
+        case 'busca':
             $controller->buscarCurriculos();
             break;
 
@@ -32,7 +35,7 @@ try {
 
         case 'cadastro':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->processarCadastro();
+                $controller->mostrarCadastro();
             } else {
                 require_once VIEWS_PATH.'cadastro.php';
             }

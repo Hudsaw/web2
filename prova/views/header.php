@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once 'constants.php';
 
 $model = new Model();
 $usuarioLogado = isset($_SESSION['id']);
@@ -18,12 +18,17 @@ $nomeUsuario = $usuarioLogado ? ($_SESSION['nome'] ?? 'Usuário') : 'Visitante';
 <body>
     <header class="header">
         <div class="header-container">
-            <div class="logo">
-                <a href="<?= BASE_URL ?>" class="logo">
-                    <img src="https://img.icons8.com/?size=100&id=45588&format=png&color=FFFFFF" alt="Logo" class="logo-img" />
-                    <span class="logo-text">Curriculum Premium</span>
+                <a href="<?= BASE_URL ?>">
+                    <div class="logo">
+                        <div>
+                            <img src="https://img.icons8.com/?size=100&id=45588&format=png&color=FFFFFF" alt="Logo" class="logo-img" />
+                        </div>
+                        <div id="espacador">.</div>
+                        <div>
+                            <span class="logo-text">Curriculum Premium</span>
+                        </div>
+                    </div>
                 </a>
-            </div>
 
             <nav class="nav-user">
                 <div class="user-greeting">
