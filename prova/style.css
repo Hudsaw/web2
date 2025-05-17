@@ -2,431 +2,237 @@
     /* Cores principais */
     --primary-color: #2c63ca;
     --primary-dark: #1a4b9e;
-    --primary-light: #fff;
-    
+    --primary-light: #ffffff;
+
     /* Cores secundárias */
     --secondary-color: #28a745;
     --secondary-dark: #1e7e34;
-    
-    /* Cores de texto */
-    --text-dark: #333;
-    --text-medium: #555;
-    --text-light: #777;
-    
-    /* Cores de fundo */
+
+    /* Cores neutras */
     --bg-light: #f5f5f5;
-    --bg-dark: #d8d8d8;
-    
+    --bg-white: #ffffff;
+    --bg-dark: #e9e9e9;
+
+    /* Cores de texto */
+    --text-dark: #333333;
+    --text-medium: #555555;
+    --text-light: #777777;
+
     /* Cores de borda */
-    --border-color: #ddd;
-    --border-light: #eee;
-    
-    /* Cores de alerta */
-    --error-bg: #f8d7da;
-    --error-text: #721c24;
-    --error-border: #f5c6cb;
-    
-    --success-bg: #d4edda;
-    --success-text: #155724;
-    --success-border: #c3e6cb;
-    
-    --info-bg: #d1ecf1;
-    --info-text: #0c5460;
-    --info-border: #bee5eb;
-    
-    --warning-bg: #fff3cd;
-    --warning-text: #856404;
+    --border-color: #dddddd;
+    --border-light: #eeeeee;
+
+    /* Cores de feedback */
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+}
+
+/* Reset e Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
     background-color: var(--bg-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
+/* Layout Principal */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Cabeçalho */
 header {
     background-color: var(--primary-color);
     color: var(--primary-light);
-    padding: 15px 30px;
-    text-align: center;
-    font-size: 30px;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px var(--text-dark);
 }
 
 .header-container {
     display: flex;
     justify-content: space-between;
-}
-
-main {
-    min-height: calc(100vh - 200px);
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 .logo {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 10px;
-    margin-left: 10px;
-    font-size: 40px;
-    text-decoration: none;
-    color: var(--primary-light);
-}
-
-#espacador {
-    color: var(--primary-color);
-}
-
-a:visited, a {
-    text-decoration: none;
-}
-
-.secao table {
-    margin: 0 auto;
-}
-
-.secao a {
-    color: var(--primary-light);
-    text-decoration: none;
-    margin: 0 15px;
+    font-size: 1.5rem;
     font-weight: bold;
-}
-
-.secao a:hover {
-    text-decoration: underline;
-}
-
-h2 {
-    text-align: center;
-    color: var(--text-dark);
-}
-
-form {
-    background-color: var(--bg-dark);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-width: 600px;
-    margin: 30px auto;
-}
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: var(--primary-color);
-    color: var(--primary-light);
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: var(--primary-dark);
-}
-
-/* Estilos para a busca e tabela */
-.form-busca {
-    background-color: var(--bg-light);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    display: flex;
-    gap: 15px;
-    align-items: flex-end;
-}
-
-.form-busca .form-group {
-    flex-grow: 1;
-    margin-bottom: 0;
-}
-
-.btn-buscar {
-    background-color: var(--secondary-color);
-    padding: 10px 20px;
-}
-
-.btn-buscar:hover {
-    background-color: var(--secondary-dark);
-}
-
-.btn-login, .btn-login:active {
     color: var(--primary-light);
     text-decoration: none;
 }
 
-.tabela-curriculos {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
+/* Conteúdo Principal */
+main {
+    flex: 1;
+    padding: 2rem 0;
 }
 
-.tabela-curriculos th, 
-.tabela-curriculos td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.tabela-curriculos th {
-    background-color: var(--primary-color);
-    color: var(--primary-light);
-}
-
-.tabela-curriculos tr:hover {
-    background-color: var(--bg-light);
-}
-
-.paginacao {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.paginacao a, 
-.paginacao span {
-    padding: 8px 16px;
-    border: 1px solid var(--border-color);
-    text-decoration: none;
-    color: var(--primary-color);
-}
-
-.paginacao a:hover {
-    background-color: var(--border-color);
-}
-
-.paginacao .pagina-atual {
-    background-color: var(--primary-color);
-    color: var(--primary-light);
-    border-color: var(--primary-color);
-}
-
-.sem-resultados {
-    padding: 20px;
-    background-color: var(--error-bg);
-    color: var(--error-text);
-    border-radius: 4px;
-}
-
-.erro-busca {
-    padding: 20px;
-    background-color: var(--warning-bg);
-    color: var(--warning-text);
-    border-radius: 4px;
-}
-
+/* Rodapé */
 footer {
-    text-align: center;
-    bottom: 0;
-    width: 100%;
     background-color: var(--primary-color);
     color: var(--primary-light);
-    position: relative;
-    padding: 20px 0;
-    height: 50px;
-}
-
-footer table {
-    border-collapse: collapse;
-    width: auto;
-    margin: 0 auto;
-}
-
-footer td {
-    padding: 0 15px;
+    padding: 1.5rem 0;
     text-align: center;
-    vertical-align: middle;
+    margin-top: auto;
 }
 
-.icon-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 15px;
+/* Componentes Comuns */
+.card {
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--text-dark);
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 800px;
+    width: 100%;
 }
 
-.icon img {
-    width: 40px;
-    height: 40px;
-    transition: transform 0.3s ease;
-    filter: brightness(0) invert(1); 
-}
-
-.icon img:hover {
-    transform: scale(1.1);
-}
-
-img {
-    height: 50px;
-    width: 50px;
-}
-
-.apresentacao {
+.card h1,
+.card h2 {
     text-align: center;
-    background-color: var(--bg-dark);
-}
-
-.hero h1 {
-    font-size: 2.5em;
+    margin-bottom: 1.5rem;
     color: var(--primary-color);
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 1.2em;
-    color: var(--text-dark);
-    margin: 10px 0;
 }
 
 .btn {
     display: inline-block;
-    margin-top: 20px;
+    padding: 0.75rem 1.5rem;
     background-color: var(--primary-color);
     color: var(--primary-light);
-    padding: 12px 25px;
+    border: none;
+    border-radius: 4px;
     text-decoration: none;
-    border-radius: 5px;
-    font-size: 1em;
+    cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    width: 100%;
+    max-width: 200px;
 }
 
 .btn:hover {
     background-color: var(--primary-dark);
 }
 
-.vantagens {
-    margin-top: 50px;
+.btn-secondary {
+    background-color: var(--secondary-color);
 }
 
-.vantagens h2 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
+.btn-secondary:hover {
+    background-color: var(--secondary-dark);
 }
 
-.vantagens ul {
-    list-style: none;
-    padding: 0;
-    font-size: 1.1em;
+/* Formulários */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
-.vantagens li {
-    margin-bottom: 10px;
-    color: var(--text-dark);
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    margin: 0 auto;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-align: left;
+}
+
+/* Tabelas */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+    background-color: var(--primary-color);
+    color: var(--primary-light);
 }
 
 /* Alertas */
 .alert {
-    padding: 15px;
-    margin-bottom: 20px;
+    padding: 1rem;
+    margin-bottom: 1rem;
     border-radius: 4px;
 }
 
-.alert-error {
-    background-color: var(--error-bg);
-    color: var(--error-text);
-    border: 1px solid var(--error-border);
-}
-
 .alert-success {
-    background-color: var(--success-bg);
-    color: var(--success-text);
-    border: 1px solid var(--success-border);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
 }
 
-.alert-info {
-    background-color: var(--info-bg);
-    color: var(--info-text);
-    border: 1px solid var(--info-border);
+.alert-error {
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
 }
 
-/* Formulário de cadastro */
-.form-cadastro {
-    max-width: 800px;
-    margin: 30px auto;
-    background: var(--bg-dark);
-    padding: 30px;
+/* Páginas Específicas */
+/* Home */
+.hero {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+/* Busca */
+.search-form {
+    background-color: var(--bg-white);
+    padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
 }
 
-.form-section {
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-light);
+/* Currículo */
+.curriculo-header {
+    margin-bottom: 2rem;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-/* Visualização do currículo */
-.curriculo-container {
-    max-width: 800px;
-    margin: 30px auto;
-    background: var(--bg-dark);
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-}
-
-.curriculo-section {
-    margin-bottom: 30px;
-}
-
-.curriculo-section h2 {
-    color: var(--primary-color);
-    border-bottom: 1px solid var(--border-light);
-    padding-bottom: 10px;
-}
-
-.info-item {
-    margin-bottom: 15px;
-}
-
-.info-label {
-    font-weight: bold;
-    color: var(--text-medium);
-    display: inline-block;
-    min-width: 150px;
-}
-
-.info-value {
-    color: var(--text-dark);
-}
-
+/* Responsividade */
 @media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-        padding: 20px;
+    .container {
+        padding: 0 10px;
     }
 
-    .secao table, .secao td {
-        display: block;
-        text-align: center;
-        width: 100%;
-    }
-
-    .secao a {
-        display: inline-block;
-        margin: 10px 5px;
-    }
-
-    .icon img {
-        width: 30px;
-        height: 30px;
-    }
-    
-    footer td {
-        padding: 0 8px;
+    .table-responsive {
+        overflow-x: auto;
     }
 }

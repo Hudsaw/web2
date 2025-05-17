@@ -1,6 +1,5 @@
-</main>
 <footer>
-    <div class="secao">
+    <div class="container">
         <div class="icon-container">
             <?php 
             // Definir qual conjunto de dados usar

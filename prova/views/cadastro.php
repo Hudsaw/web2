@@ -1,16 +1,16 @@
-<div class="apresentacao">
-    <div class="formulario-container">
+<div class="container">
+    <div class="card">
         <h1><?= isset($_SESSION['id']) ? 'Editar Currículo' : 'Cadastre seu Currículo' ?></h1>
-
+        
         <?php if (!empty($erros)): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-error">
                 <?php foreach ($erros as $erro): ?>
                     <p><?= $erro ?></p>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>?action=<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>">
+        <form method="POST" action="<?= BASE_URL ?>?action=<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>"class="form-cadastro">
             <h3>Dados Pessoais</h3>
 
             <div class="form-group">

@@ -1,7 +1,7 @@
-<div class="apresentacao">
-    <div class="auth-container">
-        <h1 class="auth-title">Acesse sua conta</h1>
-
+<div class="container">
+    <div class="card" style="max-width: 500px; margin: 0 auto;">
+        <h1 class="text-center">Acesse sua conta</h1>
+        
         <?php if (!empty($erro)): ?>
             <div class="alert alert-error">
                 <?= htmlspecialchars($erro) ?>
