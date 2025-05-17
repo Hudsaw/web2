@@ -11,50 +11,57 @@ class MainController
     }
 
     public function home()
-    {
+{
+    try {
+        $areas = $this->model->getAreasAtuacao();
+                
         $dados = [
             'titulo' => 'Bem-vindo à Curriculum Premium',
-            'descricao' => 'Conectamos talentos às maiores empresas do país.'
+            'descricao' => 'Conectamos talentos às maiores empresas do país.',
+            'areas' => $areas 
         ];
 
         require VIEWS_PATH . 'header.php';
         require VIEWS_PATH . 'home.php';
         require VIEWS_PATH . 'footer.php';
+
+    } catch (Exception $e) {
+        error_log("Erro no Controller home: " . $e->getMessage());
     }
+}
 
     public function buscarCurriculos()
-    {
-        try {
-            $areaFiltro = $_GET['area'] ?? 0;
-            $paginaAtual = max((int)($_GET['pagina'] ?? 1), 1);
-            $itensPorPagina = 10;
-            $offset = ($paginaAtual - 1) * $itensPorPagina;
+{
+    try {
+        $areaFiltro = $_GET['area'] ?? null;
+        $paginaAtual = max((int)($_GET['pagina'] ?? 1), 1);
+        $itensPorPagina = 10;
+        $offset = ($paginaAtual - 1) * $itensPorPagina;
 
-            $areas = $this->model->getAreasAtuacao();
-            $resultados = [];
-            $totalPaginas = 1;
-            $totalRegistros = 0;
+        $areas = $this->model->getAreasAtuacao();
+        $resultados = [];
+        $totalPaginas = 1;
 
-            if ($areaFiltro) {
-                $totalRegistros = $this->model->countCurriculosPorArea($areaFiltro);
-                $resultados = $this->model->getCurriculosPorArea($areaFiltro, $itensPorPagina, $offset);
-            } else {
-                $totalRegistros = $this->model->countTodosCurriculos();
-                $resultados = $this->model->getTodosCurriculos($itensPorPagina, $offset);
-            }
-
-            $totalPaginas = ceil($totalRegistros / $itensPorPagina);
-
-            // Passa todas as variáveis necessárias para a view
-            require VIEWS_PATH . 'header.php';
-            require VIEWS_PATH . 'busca.php';
-            require VIEWS_PATH . 'footer.php';
-        } catch (Exception $e) {
-            error_log("Erro na busca de currículos: " . $e->getMessage());
-            header("HTTP/1.1 500 Internal Server Error");
-            require VIEWS_PATH . '404.php';
+        if ($areaFiltro) {
+            $totalRegistros = $this->model->countCurriculosPorArea($areaFiltro);
+            $resultados = $this->model->getCurriculosPorArea($areaFiltro, $itensPorPagina, $offset);
+        } else {
+            $totalRegistros = $this->model->countTodosCurriculos();
+            $resultados = $this->model->getTodosCurriculos($itensPorPagina, $offset);
         }
+
+        $totalPaginas = ceil($totalRegistros / $itensPorPagina);
+
+        require VIEWS_PATH . 'header.php';
+        require VIEWS_PATH . 'busca.php';
+        require VIEWS_PATH . 'footer.php';
+
+    } catch (Exception $e) {
+        error_log("Erro na busca: " . $e->getMessage());
+        header("HTTP/1.1 500 Internal Server Error");
+        require VIEWS_PATH . '404.php';
     }
+}
 
     //Curriculo
     public function verCurriculo($id)
@@ -140,6 +147,7 @@ class MainController
     {
         $dados = $this->validarDadosCadastro($_POST);
 
+        // Verifica se já existe usuário com mesmo email ou CPF
         if ($this->model->emailExists($dados['email'])) {
             $_SESSION['erros_cadastro'][] = "E-mail já cadastrado";
         }
@@ -150,7 +158,7 @@ class MainController
 
         if (!empty($_SESSION['erros_cadastro'])) {
             $_SESSION['dados_cadastro'] = $dados;
-            header("Location: " . BASE_URL . "cadastro.php");
+            header("Location: " . BASE_URL . "?action=cadastro");
             exit();
         }
 
@@ -159,7 +167,8 @@ class MainController
         if ($userId) {
             $_SESSION['id'] = $userId;
             $_SESSION['nome'] = $dados['nome'];
-            header("Location: " . BASE_URL . "index.php");
+            // Redireciona para a visualização do currículo
+            header("Location: " . BASE_URL . "?action=curriculo&id=" . $userId);
             exit();
         } else {
             throw new Exception("Falha ao criar usuário");
@@ -226,7 +235,7 @@ class MainController
     public function processarAtualizacao()
     {
         if (!isset($_SESSION['id'])) {
-            header("Location: " . BASE_URL . "login.php");
+            header("Location: " . BASE_URL . "?action=login");
             exit();
         }
 
@@ -235,13 +244,14 @@ class MainController
 
         if (!empty($_SESSION['erros_cadastro'])) {
             $_SESSION['dados_cadastro'] = $dados;
-            header("Location: " . BASE_URL . "cadastro.php");
+            header("Location: " . BASE_URL . "?action=cadastro");
             exit();
         }
 
         if ($this->model->updateUser($dados)) {
             $_SESSION['nome'] = $dados['nome'];
-            header("Location: " . BASE_URL . "curriculo.php?id=" . $dados['id']);
+            // Redireciona para a visualização do currículo atualizado
+            header("Location: " . BASE_URL . "?action=curriculo&id=" . $dados['id']);
             exit();
         } else {
             throw new Exception("Falha ao atualizar usuário");

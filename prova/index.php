@@ -51,8 +51,17 @@ try {
             require_once VIEWS_PATH . '404.php';
     }
 } catch (Exception $e) {
-    // Tratamento de erros
     error_log($e->getMessage());
     header("HTTP/1.1 500 Internal Server Error");
-    require_once 'erro.php';
+    
+    // Mostra mensagem amigável sem expor detalhes do erro
+    $dados = [
+        'titulo' => 'Erro no Sistema',
+        'descricao' => 'Desculpe, ocorreu um erro inesperado. Nossa equipe foi notificada.',
+        'areas' => []
+    ];
+    
+    require VIEWS_PATH . 'header.php';
+    require VIEWS_PATH . 'erro.php';
+    require VIEWS_PATH . 'footer.php';
 }

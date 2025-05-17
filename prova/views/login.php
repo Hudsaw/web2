@@ -29,9 +29,6 @@
             <a href="<?= BASE_URL ?>?action=cadastro">
                 Criar nova conta
             </a>
-            <a href="<?= BASE_URL ?>?action=recuperar-senha" class="forgot-password">
-                Esqueceu sua senha?
-            </a>
         </div>
     </div>
 </div>

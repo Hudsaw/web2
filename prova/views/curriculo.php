@@ -1,4 +1,5 @@
 <div class="apresentacao">
+
     <section id="pessoais">
         <h1><?= htmlspecialchars($curriculo['nome'] ?? 'Nome não disponível') ?></h1>
         
@@ -42,4 +43,11 @@
             </div>
         <?php endif; ?>
     </section>
+    <?php if (!empty($curriculo['editar'])): ?>
+    <div class="acoes">
+        <a href="<?= BASE_URL ?>?action=cadastro" class="btn btn-editar">
+            Editar Currículo
+        </a>
+    </div>
+<?php endif; ?>
 </div>

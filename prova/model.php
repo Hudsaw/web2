@@ -13,28 +13,23 @@ class Model
 
     // Métodos do usuário
     public function getAreasAtuacao()
-    {
+{
+    try {
         $stmt = $this->pdo->query("SELECT id, nome FROM area_atuacao ORDER BY nome");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $resultados;
+        
+    } catch (PDOException $e) {
+        error_log("Erro grave ao buscar áreas: " . $e->getMessage());
+        return []; 
     }
+}
 
     public function countTodosCurriculos()
     {
-        $stmt = $this->pdo->query("SELECT COUNT(*) FROM curriculo WHERE ativo = 1");
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM curriculo");
         return $stmt->fetchColumn();
-    }
-
-    public function getTodosCurriculos($limit, $offset)
-    {
-        $stmt = $this->pdo->prepare("
-        SELECT c.id, c.nome, c.email, c.telefone, a.nome AS area_nome 
-        FROM curriculo c
-        LEFT JOIN area_atuacao a ON c.area_atuacao_id = a.id
-        WHERE c.ativo = 1
-        LIMIT ? OFFSET ?
-    ");
-        $stmt->execute([$limit, $offset]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function countCurriculosPorArea($areaId)
@@ -42,24 +37,41 @@ class Model
         $stmt = $this->pdo->prepare("
         SELECT COUNT(*) 
         FROM curriculo 
-        WHERE area_atuacao_id = ? AND ativo = 1
+        WHERE area_atuacao_id = ?
     ");
         $stmt->execute([$areaId]);
         return $stmt->fetchColumn();
     }
 
-    public function getCurriculosPorArea($areaId, $limit, $offset)
-    {
-        $stmt = $this->pdo->prepare("
+    public function getTodosCurriculos($limit, $offset)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT c.id, c.nome, c.email, c.telefone, a.nome AS area_nome 
+        FROM curriculo c
+        LEFT JOIN area_atuacao a ON c.area_atuacao_id = a.id
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function getCurriculosPorArea($areaId, $limit, $offset)
+{
+    $stmt = $this->pdo->prepare("
         SELECT c.id, c.nome, c.email, c.telefone, a.nome AS area_nome 
         FROM curriculo c
         JOIN area_atuacao a ON c.area_atuacao_id = a.id
-        WHERE c.area_atuacao_id = ? AND c.ativo = 1
-        LIMIT ? OFFSET ?
+        WHERE c.area_atuacao_id = :areaId
+        LIMIT :limit OFFSET :offset
     ");
-        $stmt->execute([$areaId, $limit, $offset]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stmt->bindValue(':areaId', $areaId, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public function createUser($userData)
     {

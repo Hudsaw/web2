@@ -140,7 +140,7 @@
         const cep = cepInput.value.replace(/\D/g, '');
         const logradouroInput = document.getElementById('logradouro');
         const cidadeInput = document.getElementById('cidade');
-        const cepInfo = document.getElementById('cep-info'); // Elemento de feedback
+        const cepInfo = document.getElementById('cep-info'); 
 
         // Verifica se o CEP tem 8 dígitos
         if (cep.length !== 8) {

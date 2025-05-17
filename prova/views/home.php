@@ -6,19 +6,24 @@
     </section>
 
     <section class="busca-curriculos">
-        <h2>Buscar Currículos por Área de Atuação</h2>
+        <h2>Buscar Currículos</h2>
         <form method="get" action="<?= BASE_URL ?>">
-            <input type="hidden" name="action" value="buscar">
+            <input type="hidden" name="action" value="busca">
             <div class="form-group">
-                <label for="area">Área:</label>
-                <select name="area" id="area" required>
-                    <option value="">Selecione...</option>
-                    <?php foreach ($this->model->getAreasAtuacao() as $area): ?>
-                        <option value="<?= $area['id'] ?>"><?= htmlspecialchars($area['nome']) ?></option>
-                    <?php endforeach; ?>
+                <label for="area">Filtrar por Área:</label>
+                <select name="area" id="area">
+                    <option value="">Todas as áreas</option>
+                    <?php if (!empty($areas)): ?>
+                        <?php foreach ($areas as $area): ?>
+                            <option value="<?= $area['id'] ?>">
+                                <?= htmlspecialchars($area['nome']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
-            <button type="submit" class="btn btn-buscar">Buscar</button>
+            <button type="submit" class="btn btn-buscar">Filtrar</button>
+            <a href="<?= BASE_URL ?>?action=busca" class="btn btn-todos">Ver todos os currículos</a>
         </form>
     </section>
 
