@@ -5,7 +5,7 @@ define('VIEWS_PATH', __DIR__ . '/views/');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'curriculo');
 define('DB_USER', 'root');
-define('DB_PASS', 'aluno');
+define('DB_PASS', '');
 
 
 // Inicia a sessão de forma segura

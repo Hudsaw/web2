@@ -1,19 +1,45 @@
 <div class="apresentacao">
     <section id="pessoais">
-        <h1><?= htmlspecialchars($curriculo['nome'] ?? '') ?></h1>
-        <?php if (!empty($curriculo['area'])): ?>
-            <p><strong>Área:</strong> <?= htmlspecialchars($curriculo['area']) ?></p>
+        <h1><?= htmlspecialchars($curriculo['nome'] ?? 'Nome não disponível') ?></h1>
+        
+        <?php if (!empty($curriculo['area_nome'])): ?>
+            <p><strong>Área:</strong> <?= htmlspecialchars($curriculo['area_nome']) ?></p>
         <?php endif; ?>
-        <p><strong>E-mail:</strong> <?= htmlspecialchars($curriculo['email']) ?></p>
-        <p><strong>Telefone:</strong> <?= htmlspecialchars($curriculo['telefone']) ?></p>
+        
+        <p><strong>E-mail:</strong> <?= htmlspecialchars($curriculo['email'] ?? 'Não informado') ?></p>
+        <p><strong>Telefone:</strong> <?= htmlspecialchars($curriculo['telefone'] ?? 'Não informado') ?></p>
+        
         <?php if (!empty($curriculo['resumo'])): ?>
-            <p><strong>Resumo:</strong> <?= nl2br(htmlspecialchars($curriculo['resumo'])) ?></p>
+            <div class="resumo">
+                <h3>Resumo Profissional</h3>
+                <p><?= nl2br(htmlspecialchars($curriculo['resumo'])) ?></p>
+            </div>
         <?php endif; ?>
+        
         <?php if (!empty($curriculo['escolaridade'])): ?>
-            <p><strong>Escolaridade:</strong> <?= ucfirst(htmlspecialchars($curriculo['escolaridade'])) ?></p>
+            <div class="escolaridade">
+                <h3>Escolaridade</h3>
+                <p><?= ucfirst(htmlspecialchars($curriculo['escolaridade'])) ?></p>
+            </div>
         <?php endif; ?>
+        
         <?php if (!empty($curriculo['experiencias'])): ?>
-            <p><strong>Experiências:</strong> <?= htmlspecialchars($curriculo['experiencias']) ?></p>
+            <div class="experiencias">
+                <h3>Experiências Profissionais</h3>
+                <p><?= nl2br(htmlspecialchars($curriculo['experiencias'])) ?></p>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($curriculo['linkedin']) || !empty($curriculo['github'])): ?>
+            <div class="redes-sociais">
+                <h3>Redes Sociais</h3>
+                <?php if (!empty($curriculo['linkedin'])): ?>
+                    <p><a href="<?= htmlspecialchars($curriculo['linkedin']) ?>" target="_blank">LinkedIn</a></p>
+                <?php endif; ?>
+                <?php if (!empty($curriculo['github'])): ?>
+                    <p><a href="<?= htmlspecialchars($curriculo['github']) ?>" target="_blank">GitHub</a></p>
+                <?php endif; ?>
+            </div>
         <?php endif; ?>
     </section>
 </div>

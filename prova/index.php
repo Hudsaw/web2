@@ -12,7 +12,7 @@ try {
         case 'home':
             $controller->home();
             break;
-        
+
         case 'busca':
             $controller->buscarCurriculos();
             break;
@@ -21,6 +21,7 @@ try {
             $id = $_GET['id'] ?? 0;
             $controller->verCurriculo($id);
             break;
+
         case 'atualizar':
             $controller->processarAtualizacao();
             break;
@@ -29,21 +30,25 @@ try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $controller->processarLogin();
             } else {
-                require_once VIEWS_PATH.'login.php';
+                $controller->mostrarLogin();
             }
             break;
 
         case 'cadastro':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->mostrarCadastro();
+                $controller->processarCadastro();
             } else {
-                require_once VIEWS_PATH.'cadastro.php';
+                $controller->mostrarCadastro();
             }
+            break;
+
+        case 'logout':
+            $controller->logout();
             break;
 
         default:
             header("HTTP/1.0 404 Not Found");
-            require_once VIEWS_PATH.'404.php';
+            require_once VIEWS_PATH . '404.php';
     }
 } catch (Exception $e) {
     // Tratamento de erros

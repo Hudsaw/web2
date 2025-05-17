@@ -18,19 +18,47 @@ class Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getCurriculosPorArea($areaId, $limit, $offset)
+    public function countTodosCurriculos()
     {
-        $stmt = $this->pdo->prepare("SELECT id, nome, email, telefone FROM curriculo 
-                                    WHERE area_atuacao_id = ? LIMIT ? OFFSET ?");
-        $stmt->execute([$areaId, $limit, $offset]);
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM curriculo WHERE ativo = 1");
+        return $stmt->fetchColumn();
+    }
+
+    public function getTodosCurriculos($limit, $offset)
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT c.id, c.nome, c.email, c.telefone, a.nome AS area_nome 
+        FROM curriculo c
+        LEFT JOIN area_atuacao a ON c.area_atuacao_id = a.id
+        WHERE c.ativo = 1
+        LIMIT ? OFFSET ?
+    ");
+        $stmt->execute([$limit, $offset]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function countCurriculosPorArea($areaId)
     {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM curriculo WHERE area_atuacao_id = ?");
+        $stmt = $this->pdo->prepare("
+        SELECT COUNT(*) 
+        FROM curriculo 
+        WHERE area_atuacao_id = ? AND ativo = 1
+    ");
         $stmt->execute([$areaId]);
         return $stmt->fetchColumn();
+    }
+
+    public function getCurriculosPorArea($areaId, $limit, $offset)
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT c.id, c.nome, c.email, c.telefone, a.nome AS area_nome 
+        FROM curriculo c
+        JOIN area_atuacao a ON c.area_atuacao_id = a.id
+        WHERE c.area_atuacao_id = ? AND c.ativo = 1
+        LIMIT ? OFFSET ?
+    ");
+        $stmt->execute([$areaId, $limit, $offset]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function createUser($userData)
@@ -141,6 +169,7 @@ class Model
         }
     }
 
+    // Validação
     public function getCurriculoById($id)
     {
         try {
@@ -161,7 +190,9 @@ class Model
         try {
             $stmt = $this->pdo->prepare("SELECT * FROM curriculo WHERE email = ?");
             $stmt->execute([$email]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $usuario;
         } catch (PDOException $e) {
             error_log("Erro ao buscar usuário por email: " . $e->getMessage());
             return false;

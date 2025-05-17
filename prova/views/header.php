@@ -40,8 +40,9 @@ $nomeUsuario = $usuarioLogado ? ($_SESSION['nome'] ?? 'Usuário') : 'Visitante';
                         <span class="btn-text">Sair</span>
                     </a>
                 <?php else: ?>
-                    <a href="<?= BASE_URL ?>login.php" class="btn-login">
-                        <span class="btn-text">Login</span>
+                    <a href="<?= BASE_URL ?>?action=login" class="btn-login">
+    <span class="btn-text">Login</span>
+</a>
                     </a>
                 <?php endif; ?>
             </nav>

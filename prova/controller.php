@@ -24,22 +24,36 @@ class MainController
 
     public function buscarCurriculos()
     {
-        $areaFiltro = $_GET['area'] ?? 0;
-        $paginaAtual = max((int)($_GET['pagina'] ?? 1), 1);
-        $itensPorPagina = 10;
-        $offset = ($paginaAtual - 1) * $itensPorPagina;
+        try {
+            $areaFiltro = $_GET['area'] ?? 0;
+            $paginaAtual = max((int)($_GET['pagina'] ?? 1), 1);
+            $itensPorPagina = 10;
+            $offset = ($paginaAtual - 1) * $itensPorPagina;
 
-        $areas = $this->model->getAreasAtuacao();
+            $areas = $this->model->getAreasAtuacao();
+            $resultados = [];
+            $totalPaginas = 1;
+            $totalRegistros = 0;
 
-        if ($areaFiltro) {
-            $totalRegistros = $this->model->countCurriculosPorArea($areaFiltro);
-            $resultados = $this->model->getCurriculosPorArea($areaFiltro, $itensPorPagina, $offset);
+            if ($areaFiltro) {
+                $totalRegistros = $this->model->countCurriculosPorArea($areaFiltro);
+                $resultados = $this->model->getCurriculosPorArea($areaFiltro, $itensPorPagina, $offset);
+            } else {
+                $totalRegistros = $this->model->countTodosCurriculos();
+                $resultados = $this->model->getTodosCurriculos($itensPorPagina, $offset);
+            }
+
             $totalPaginas = ceil($totalRegistros / $itensPorPagina);
-        }
 
-        require VIEWS_PATH . 'header.php';
-        require VIEWS_PATH . 'busca.php';
-        require VIEWS_PATH . 'footer.php';
+            // Passa todas as variáveis necessárias para a view
+            require VIEWS_PATH . 'header.php';
+            require VIEWS_PATH . 'busca.php';
+            require VIEWS_PATH . 'footer.php';
+        } catch (Exception $e) {
+            error_log("Erro na busca de currículos: " . $e->getMessage());
+            header("HTTP/1.1 500 Internal Server Error");
+            require VIEWS_PATH . '404.php';
+        }
     }
 
     //Curriculo
@@ -59,6 +73,7 @@ class MainController
         require VIEWS_PATH . 'curriculo.php';
         require VIEWS_PATH . 'footer.php';
     }
+
 
     // Login
     public function mostrarLogin()
@@ -82,14 +97,14 @@ class MainController
             $_SESSION['id'] = $usuario['id'];
             $_SESSION['nome'] = $usuario['nome'];
 
-            $redirect = $_SESSION['redirect_url'] ?? 'index.php';
+            $redirect = $_SESSION['redirect_url'] ?? 'index.php?action=home';
             unset($_SESSION['redirect_url']);
 
             header("Location: " . BASE_URL . $redirect);
             exit();
         } else {
             $_SESSION['erro_login'] = "Credenciais inválidas";
-            header("Location: " . BASE_URL . "login.php");
+            header("Location: " . BASE_URL . "?action=login");
             exit();
         }
     }
@@ -179,6 +194,14 @@ class MainController
             'github' => trim($post['github'] ?? '')
         ];
 
+        // Validação
+        if ($dados['senha'] !== $dados['confirmar_senha']) {
+            $_SESSION['erros_cadastro'][] = "As senhas não coincidem";
+        } elseif (strlen($dados['senha']) < 8) {
+            $_SESSION['erros_cadastro'][] = "Senha deve ter no mínimo 8 caracteres";
+        }
+        $dados['senha'] = trim($dados['senha']);
+
         // Validações
         $erros = [];
         if (strlen($dados['cpf']) !== 11) $erros[] = "CPF inválido";
@@ -195,11 +218,7 @@ class MainController
             exit();
         }
 
-        // Remove campos não necessários para o banco
         unset($dados['confirmar_senha']);
-
-        // Hash da senha
-        $dados['senha'] = password_hash($dados['senha'], PASSWORD_DEFAULT);
 
         return $dados;
     }
@@ -227,5 +246,21 @@ class MainController
         } else {
             throw new Exception("Falha ao atualizar usuário");
         }
+    }
+
+    public function mostrarErro($codigo = 404, $mensagem = 'Página não encontrada')
+    {
+        http_response_code($codigo);
+
+        $dados = [
+            'codigo' => $codigo,
+            'mensagem' => $mensagem,
+            'titulo' => 'Erro ' . $codigo
+        ];
+
+        require VIEWS_PATH . 'header.php';
+        require VIEWS_PATH . '404.php';
+        require VIEWS_PATH . 'footer.php';
+        exit();
     }
 }
