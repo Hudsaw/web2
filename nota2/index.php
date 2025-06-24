@@ -20,10 +20,12 @@ try {
         exit();
     }
     error_log("======== NOVA REQUISICAO ========");
-error_log("REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD']);
-error_log("REQUEST_URI: " . $_SERVER['REQUEST_URI']);
-error_log("POST: " . print_r($_POST, true));
-error_log("GET: " . print_r($_GET, true));
+    error_log("REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD']);
+    error_log("REQUEST_URI: " . $_SERVER['REQUEST_URI']);
+    error_log("POST: " . print_r($_POST, true));
+    error_log("GET: " . print_r($_GET, true));
+    error_log("action: " . $action);
+
     switch ($action) {
         case 'home':
             $controller->home();
@@ -60,6 +62,9 @@ error_log("GET: " . print_r($_GET, true));
             break;
         case 'jogar':
             $controller->iniciarQuiz();
+            break;
+        case 'processarQuiz':
+            $controller->processarQuiz();
             break;
         case 'admin':
             $controller->gerenciar();

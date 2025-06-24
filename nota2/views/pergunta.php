@@ -7,19 +7,8 @@
             <?php unset($_SESSION['erro']); ?>
         <?php endif; ?>
         
-        <?php if (isset($_SESSION['erros'])): ?>
-            <div class="alert alert-danger">
-                <ul>
-                    <?php foreach ($_SESSION['erros'] as $erro): ?>
-                        <li><?= $erro ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-            <?php unset($_SESSION['erros']); ?>
-        <?php endif; ?>
-        
-        <form method="post" action="<?= BASE_URL ?>">
-    <input type="hidden" name="action" value="adicionarPergunta">
+        <form id="formPergunta" method="POST" action="<?= BASE_URL ?>?action=adicionarPergunta">
+            <!-- Campos do formulário -->
             <div class="form-group">
                 <label for="pergunta">Pergunta:</label>
                 <textarea id="pergunta" name="pergunta" required><?= $_SESSION['dados_form']['pergunta'] ?? '' ?></textarea>
@@ -78,5 +67,41 @@
         </form>
     </section>
 </main>
-
-<?php unset($_SESSION['dados_form']); ?>
+<script>
+document.getElementById('formPergunta').addEventListener('submit', function(e) {
+    // Verifica se o navegador não suporta Fetch API
+    if (!window.fetch) {
+        return; // Deixa o formulário ser enviado normalmente
+    }
+    
+    // Impede o envio padrão apenas para fazer a requisição AJAX
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const action = this.action;
+    
+    fetch(action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else if (!response.ok) {
+            throw new Error('Erro na requisição');
+        }
+        return response.text();
+    })
+    .then(data => {
+        // Se houver dados (não foi redirecionado), atualiza a página
+        if (data) {
+            document.body.innerHTML = data;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Recarrega a página em caso de erro
+        window.location.reload();
+    });
+});
+</script>

@@ -213,6 +213,7 @@ class Model
 
     public function getPerguntasQuiz($areaId, $nivel)
     {
+        error_log("Buscando perguntas para área $areaId e nível $nivel");
         try {
             $stmt = $this->pdo->prepare("
             SELECT p.*
@@ -264,6 +265,7 @@ class Model
 
     public function getPerguntasAleatorias($areaId)
     {
+        error_log("Buscando perguntas aleatórias para área $areaId");
         try {
             $stmt = $this->pdo->prepare("
             (SELECT p.*, n.nome as nivel
@@ -296,15 +298,22 @@ class Model
         }
     }
 
-    public function atualizarPontuacao($userId, $avaliacao, $totalPerguntas)
-    {
+    public function atualizarPontuacao($userId, $avaliacao, $totalPerguntas) {
+        error_log("Atualizando pontuação para usuário $userId: $avaliacao%, $totalPerguntas perguntas");
         try {
             $stmt = $this->pdo->prepare("
-            UPDATE cadastro
-            SET avaliacao = ?, total_perguntas = ?
-            WHERE id = ?
-        ");
-            return $stmt->execute([$avaliacao, $totalPerguntas, $userId]);
+                UPDATE cadastro
+                SET avaliacao = :avaliacao, 
+                    total_perguntas = :total_perguntas,
+                    atualizado_em = NOW()
+                WHERE id = :id
+            ");
+            
+            $stmt->bindParam(':avaliacao', $avaliacao, PDO::PARAM_INT);
+            $stmt->bindParam(':total_perguntas', $totalPerguntas, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+            
+            return $stmt->execute();
         } catch (PDOException $e) {
             error_log("Erro ao atualizar pontuação: " . $e->getMessage());
             return false;
@@ -313,6 +322,7 @@ class Model
 
     public function verificarResposta($perguntaId, $resposta)
     {
+        error_log("Verificando resposta para pergunta $perguntaId: $resposta");
         try {
             $stmt = $this->pdo->prepare("
             SELECT COUNT(*) as correct
@@ -330,6 +340,7 @@ class Model
 
     public function getRespostaCorreta($perguntaId)
     {
+        error_log("Buscando resposta correta para pergunta $perguntaId");
         try {
             $stmt = $this->pdo->prepare("SELECT resposta_correta FROM perguntas WHERE id = ?");
             $stmt->execute([$perguntaId]);

@@ -163,32 +163,40 @@ document.addEventListener('DOMContentLoaded', function() {
             perguntaIds: perguntaIds
         })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Atualizar header com a nova pontuação
-            const pontuacaoEl = document.querySelector('.user-score');
-            if (pontuacaoEl) {
-                pontuacaoEl.textContent = data.porcentagem + '%';
-            }
-
-            // Mostrar resultado final brevemente antes de redirecionar
-            document.getElementById('quiz-progress').style.display = 'none';
-            perguntaArea.style.display = 'none';
-            feedbackArea.style.display = 'none';
-            resultadoFinal.style.display = 'block';
-
-            resultadoTexto.textContent = `Você acertou ${data.acertos} de 5 perguntas (${data.porcentagem}%).`;
-            
-            // Redirecionar após 3 segundos
-            setTimeout(() => {
-                window.location.href = data.redirect;
-            }, 3000);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor');
         }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Mostrar resultado final
+        document.getElementById('quiz-progress').style.display = 'none';
+        perguntaArea.style.display = 'none';
+        feedbackArea.style.display = 'none';
+        resultadoFinal.style.display = 'block';
+
+        resultadoTexto.textContent = `Você acertou ${data.acertos} de 5 perguntas (${data.porcentagem}%). Sua nova pontuação média é ${data.novaPontuacao}%.`;
+
+        // Atualizar header com a nova pontuação
+        const pontuacaoEl = document.querySelector('.user-score');
+        if (pontuacaoEl) {
+            pontuacaoEl.textContent = data.novaPontuacao + '%';
+        }
+
+        // Redirecionar após 5 segundos
+        setTimeout(() => {
+            window.location.href = data.redirect;
+        }, 5000);
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Erro ao finalizar quiz');
+        resultadoTexto.textContent = 'Erro ao processar o quiz: ' + error.message;
+        resultadoFinal.style.display = 'block';
     });
 }
 

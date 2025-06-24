@@ -371,52 +371,76 @@ class MainController
     }
 
     public function processarQuiz()
-    {
-        if (! isset($_SESSION['id'])) {
-            echo json_encode(['error' => 'Não autenticado']);
+{
+    header('Content-Type: application/json');
+    
+    if (!isset($_SESSION['id'])) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Não autenticado']);
+        exit();
+    }
+
+    try {
+        $userId = $_SESSION['id'];
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$data || !isset($data['respostas']) || !isset($data['perguntaIds'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Dados inválidos']);
             exit();
         }
 
-        header('Content-Type: application/json');
+        $respostas = $data['respostas'];
+        $perguntaIds = $data['perguntaIds'];
 
-        try {
-            $userId      = $_SESSION['id'];
-            $respostas   = $_POST['respostas'] ?? [];
-            $perguntaIds = $_POST['perguntaIds'] ?? [];
-
-            if (count($respostas) !== 5 || count($perguntaIds) !== 5) {
-                throw new Exception("Número inválido de respostas");
-            }
-
-            // Verifica respostas e calcula acertos
-            $acertos = 0;
-            for ($i = 0; $i < 5; $i++) {
-                $correta = $this->model->verificarResposta($perguntaIds[$i], $respostas[$i]);
-                if ($correta) {
-                    $acertos++;
-                }
-
-            }
-
-            $porcentagem = round(($acertos / 5) * 100);
-
-            // Atualiza a pontuação do usuário no banco de dados
-            $this->model->atualizarPontuacao($userId, $porcentagem, 5);
-
-            // Atualiza a sessão com a nova pontuação
-            $_SESSION['pontuacao'] = $porcentagem;
-
-            echo json_encode([
-                'success'     => true,
-                'acertos'     => $acertos,
-                'porcentagem' => $porcentagem,
-                'redirect'    => BASE_URL . '?action=home', 
-            ]);
-        } catch (Exception $e) {
-            error_log("Erro ao processar quiz: " . $e->getMessage());
-            echo json_encode(['error' => $e->getMessage()]);
+        if (count($respostas) !== 5 || count($perguntaIds) !== 5) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Número inválido de respostas']);
+            exit();
         }
+
+        // Verifica respostas e calcula acertos
+        $acertos = 0;
+        for ($i = 0; $i < 5; $i++) {
+            if ($this->model->verificarResposta($perguntaIds[$i], $respostas[$i])) {
+                $acertos++;
+            }
+        }
+
+        $porcentagem = round(($acertos / 5) * 100);
+
+        // Obter pontuação atual do usuário
+        $usuario = $this->model->getUserById($userId);
+        $pontuacaoAtual = $usuario['avaliacao'] ?? 0;
+        $totalPerguntasAtual = $usuario['total_perguntas'] ?? 0;
+
+        // Calcular nova pontuação (média ponderada)
+        $novaPontuacao = round(($pontuacaoAtual * $totalPerguntasAtual + $porcentagem * 5) / ($totalPerguntasAtual + 5));
+        $novoTotal = $totalPerguntasAtual + 5;
+
+        // Atualiza a pontuação do usuário no banco de dados
+        $success = $this->model->atualizarPontuacao($userId, $novaPontuacao, $novoTotal);
+        
+        if (!$success) {
+            throw new Exception("Falha ao atualizar pontuação no banco de dados");
+        }
+
+        echo json_encode([
+            'success' => true,
+            'acertos' => $acertos,
+            'porcentagem' => $porcentagem,
+            'novaPontuacao' => $novaPontuacao,
+            'redirect' => BASE_URL . '?action=home'
+        ]);
+        exit();
+        
+    } catch (Exception $e) {
+        error_log("Erro ao processar quiz: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['error' => $e->getMessage()]);
+        exit();
     }
+}
 
     public function gerenciar()
     {
@@ -510,28 +534,34 @@ class MainController
     }
 
 // Métodos auxiliares
-public function processarAdicaoPergunta() {
-    try {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            throw new Exception("Método inválido");
-        }
-        
-        $dados = $this->validarDadosPergunta($_POST);
+    public function processarAdicaoPergunta()
+    {
+        error_log("Iniciando processarAdicaoPergunta");
 
-        if ($this->model->adicionarPergunta($dados)) {
-            $_SESSION['mensagem'] = "Pergunta adicionada com sucesso!";
-            header("Location: " . BASE_URL . "?action=admin");
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Método inválido");
+            }
+
+            error_log("Dados POST recebidos: " . print_r($_POST, true));
+
+            $dados = $this->validarDadosPergunta($_POST);
+
+            if ($this->model->adicionarPergunta($dados)) {
+                $_SESSION['mensagem'] = "Pergunta adicionada com sucesso!";
+                header("Location: " . BASE_URL . "?action=admin");
+                exit();
+            } else {
+                throw new Exception("Falha ao adicionar pergunta no banco de dados");
+            }
+        } catch (Exception $e) {
+            error_log("Erro em processarAdicaoPergunta: " . $e->getMessage());
+            $_SESSION['erro']       = $e->getMessage();
+            $_SESSION['dados_form'] = $_POST;
+            header("Location: " . BASE_URL . "?action=adicionarPergunta");
             exit();
-        } else {
-            throw new Exception("Falha ao adicionar pergunta");
         }
-    } catch (Exception $e) {
-        $_SESSION['erro'] = $e->getMessage();
-        $_SESSION['dados_form'] = $_POST;
-        header("Location: " . BASE_URL . "?action=adicionarPergunta");
-        exit();
     }
-}
 
     private function validarDadosPergunta($post)
     {
