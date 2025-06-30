@@ -7,7 +7,7 @@
             <?php unset($_SESSION['erro']); ?>
         <?php endif; ?>
         
-        <form id="formPergunta" method="POST" action="<?= BASE_URL ?>?action=adicionarPergunta">
+        <form id="formPergunta" method="POST" action="<?= BASE_URL ?>?action=cadastrarPergunta">
             <!-- Campos do formulário -->
             <div class="form-group">
                 <label for="pergunta">Pergunta:</label>
@@ -69,12 +69,10 @@
 </main>
 <script>
 document.getElementById('formPergunta').addEventListener('submit', function(e) {
-    // Verifica se o navegador não suporta Fetch API
     if (!window.fetch) {
-        return; // Deixa o formulário ser enviado normalmente
+        return; 
     }
     
-    // Impede o envio padrão apenas para fazer a requisição AJAX
     e.preventDefault();
     
     const formData = new FormData(this);
@@ -93,7 +91,6 @@ document.getElementById('formPergunta').addEventListener('submit', function(e) {
         return response.text();
     })
     .then(data => {
-        // Se houver dados (não foi redirecionado), atualiza a página
         if (data) {
             document.body.innerHTML = data;
         }

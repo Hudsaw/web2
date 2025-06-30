@@ -76,11 +76,10 @@ try {
             $controller->excluirPergunta();
             break;
         case 'adicionarPergunta':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->processarAdicaoPergunta();
-            } else {
-                $controller->mostrarFormularioPergunta();
-            }
+            $controller->mostrarFormularioPergunta();
+            break;
+        case 'cadastrarPergunta':
+            $controller->processarAdicaoPergunta();
             break;
         default:
             header("HTTP/1.0 404 Not Found");

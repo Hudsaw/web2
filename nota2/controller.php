@@ -19,6 +19,7 @@ class MainController
                 'titulo'    => 'Bem-vindo à Curriculum Quiz',
                 'descricao' => 'Conectamos talentos às maiores empresas do país.',
                 'areas'     => $areas,
+                'usuario'   => isset($_SESSION['id']) ? $this->model->getUserById($_SESSION['id']) : null,
             ];
 
             require VIEWS_PATH . 'header.php';
@@ -100,7 +101,7 @@ class MainController
 
         $usuario = $this->model->getUserByEmail($email);
 
-        if ($usuario && $this->verificarSenha($senha, $usuario['senha'])) {
+        if ($usuario && password_verify($senha, $usuario['senha'])) {
             $_SESSION['id']   = $usuario['id'];
             $_SESSION['nome'] = $usuario['nome'];
 
@@ -176,13 +177,6 @@ class MainController
     }
 
     // Métodos auxiliares
-    private function verificarSenha($senha, $hash)
-    {
-        if (strlen($hash) === 64 && ctype_xdigit($hash)) {
-            return hash('sha256', $senha) === $hash;
-        }
-        return password_verify($senha, $hash);
-    }
 
     private function validarDadosCadastro($post)
     {

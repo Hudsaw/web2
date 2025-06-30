@@ -1,18 +1,24 @@
 <main class="container">
     <section class="hero card">
         <h1><?= $dados['titulo'] ?></h1>
-        <p><?= $dados['descricao'] ?></p>
-        <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Cadastre-se</a>
+            <p><?= $dados['descricao'] ?></p>
+        <?php if (isset($dados['usuario'])): ?>
+            <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Editar cadastro</a>
+        <?php else: ?>
+            <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Cadastre-se</a>
+        <?php endif; ?>
     </section>
 
     <section class="card">
         <h2>Sobre o Quiz</h2>
         <p>O Quiz ADS é um teste de conhecimento para avaliar as habilidades e competências dos candidatos para as vagas de ADS.</p>
+        <div class="form-group">
         <a href="<?= BASE_URL ?>?action=quiz" class="btn btn-entrar">Jogar</a>
         <a href="<?= BASE_URL ?>?action=adicionarPergunta" class="btn btn-entrar">Criar Pergunta</a>
-        <?php if ($_SESSION['tipo_usuario'] == 'admin'): ?>
+        <?php if (empty ($dados) && $dados['usuario']['tipo'] == 'admin'): ?>
             <a href="<?= BASE_URL ?>?action=admin" class="btn btn-entrar">Gerenciar</a>
         <?php endif; ?>
+        </div>
     </section>
 
     <section class="card">
