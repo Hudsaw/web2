@@ -49,7 +49,7 @@ class PageModel
     {
         $stmt = $this->pdo->prepare("
         SELECT c.*, a.nome AS area_nome
-        FROM curriculos c
+        FROM usuarios c
         LEFT JOIN area_atuacao a ON c.area_atuacao_id = a.id
         WHERE c.id = ?
     ");

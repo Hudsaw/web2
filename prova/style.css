@@ -547,6 +547,10 @@ h3{
 }
 
 
+.alternativas input[type="radio"] {
+    padding-right: 10px;
+}
+
 
 
 /* Responsividade */

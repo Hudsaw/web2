@@ -15,9 +15,9 @@ class AuthController
         }
 
         $data = [
-            'error' => $_SESSION['login_error'] ?? null
+            'error' => $_SESSION['login_error'] ?? null,
         ];
-        
+
         $this->render('login', $data);
         unset($_SESSION['login_error']);
     }
@@ -28,19 +28,19 @@ class AuthController
             $this->redirect('/login');
         }
 
-        $email = strtolower(trim($_POST['email']));
+        $email    = strtolower(trim($_POST['email']));
         $password = $_POST['senha'];
 
         $user = $this->userModel->authenticate($email, $password);
 
         if ($user) {
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id']   = $user['id'];
             $_SESSION['user_name'] = $user['nome'];
             $_SESSION['user_role'] = $user['tipo'];
 
             $redirect = $_SESSION['redirect_url'] ?? '/';
             unset($_SESSION['redirect_url']);
-            
+
             $this->redirect($redirect);
         }
 
@@ -52,10 +52,10 @@ class AuthController
     {
         $data = [
             'errors' => $_SESSION['register_errors'] ?? [],
-            'old' => $_SESSION['register_data'] ?? [],
-            'areas' => $this->userModel->getAreasAtuacao()
+            'old'    => $_SESSION['register_data'] ?? [],
+            'areas'  => $this->userModel->getAreasAtuacao(),
         ];
-        
+
         $this->render('cadastro', $data);
         unset($_SESSION['register_errors'], $_SESSION['register_data']);
     }
@@ -70,14 +70,14 @@ class AuthController
 
         if (isset($data['errors'])) {
             $_SESSION['register_errors'] = $data['errors'];
-            $_SESSION['register_data'] = $_POST;
+            $_SESSION['register_data']   = $_POST;
             $this->redirect('/cadastro');
         }
 
         $userId = $this->userModel->createUser($data);
 
         if ($userId) {
-            $_SESSION['user_id'] = $userId;
+            $_SESSION['user_id']   = $userId;
             $_SESSION['user_name'] = $data['nome'];
             $this->redirect('/');
         }
@@ -92,22 +92,47 @@ class AuthController
         $this->redirect('/');
     }
 
+    public function atualizar()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/editar');
+        }
+
+        $userId = $_SESSION['user_id'];
+        $data   = $this->validateUpdateData($_POST);
+
+        if (isset($data['errors'])) {
+            $_SESSION['register_errors'] = $data['errors'];
+            $this->redirect('/editar');
+        }
+
+        $success = $this->userModel->updateUser($userId, $data);
+
+        if ($success) {
+            $_SESSION['success_message'] = 'Currículo atualizado com sucesso!';
+            $this->redirect('/');
+        }
+
+        $_SESSION['register_errors'] = ['Erro ao atualizar o currículo'];
+        $this->redirect('/editar');
+    }
+
     private function validateRegistration($post)
     {
         $errors = [];
-        $data = [
-            'nome' => trim($post['nome']),
-            'email' => filter_var(trim($post['email']), FILTER_SANITIZE_EMAIL),
-            'senha' => $post['senha'],
+        $data   = [
+            'nome'            => trim($post['nome']),
+            'email'           => filter_var(trim($post['email']), FILTER_SANITIZE_EMAIL),
+            'senha'           => $post['senha'],
             'confirmar_senha' => $post['confirmar_senha'] ?? '',
-            'area_atuacao_id' => $post['area_atuacao_id'] ?? null
+            'area_atuacao_id' => $post['area_atuacao_id'] ?? null,
         ];
 
         if (empty($data['nome'])) {
             $errors['nome'] = 'Nome é obrigatório';
         }
 
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Email inválido';
         } elseif ($this->userModel->emailExists($data['email'])) {
             $errors['email'] = 'Email já cadastrado';
@@ -119,7 +144,50 @@ class AuthController
             $errors['confirmar_senha'] = 'Senhas não coincidem';
         }
 
-        if (!empty($errors)) {
+        if (! empty($errors)) {
+            return ['errors' => $errors];
+        }
+
+        $data['senha'] = password_hash($data['senha'], PASSWORD_DEFAULT);
+        unset($data['confirmar_senha']);
+
+        return $data;
+    }
+
+    private function validateUpdateData($post)
+    {
+        $errors = [];
+        $data   = [
+            'nome'            => trim($post['nome'] ?? ''),
+            'telefone'        => trim($post['telefone'] ?? ''),
+            'cpf'             => trim($post['cpf'] ?? ''),
+            'cep'             => trim($post['cep'] ?? ''),
+            'logradouro'      => trim($post['logradouro'] ?? ''),
+            'complemento'     => trim($post['complemento'] ?? ''),
+            'cidade'          => trim($post['cidade'] ?? ''),
+            'area_atuacao_id' => $post['area_atuacao_id'] ?? null,
+            'escolaridade'    => $post['escolaridade'] ?? null,
+            'resumo'          => trim($post['resumo'] ?? ''),
+            'experiencias'    => trim($post['experiencias'] ?? ''),
+            'linkedin'        => trim($post['linkedin'] ?? ''),
+            'github'          => trim($post['github'] ?? ''),
+        ];
+
+        if (empty($data['nome'])) {
+            $errors['nome'] = 'Nome é obrigatório';
+        }
+
+        if (! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Email inválido';
+        }
+
+        if (strlen($data['senha']) < 8) {
+            $errors['senha'] = 'Senha deve ter pelo menos 8 caracteres';
+        } elseif ($data['senha'] !== $data['confirmar_senha']) {
+            $errors['confirmar_senha'] = 'Senhas não coincidem';
+        }
+
+        if (! empty($errors)) {
             return ['errors' => $errors];
         }
 

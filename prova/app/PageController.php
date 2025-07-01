@@ -32,6 +32,23 @@ class PageController
         ]);
     }
 
+    public function mostrarCadastro()
+{
+    $data = [
+        'errors' => $_SESSION['register_errors'] ?? [],
+        'dados' => [],
+        'areas' => $this->userModel->getAreasAtuacao()
+    ];
+
+    // Se usuário está logado, carrega seus dados
+    if (isset($_SESSION['user_id'])) {
+        $data['dados'] = $this->userModel->getUserById($_SESSION['user_id']);
+    }
+
+    $this->render('cadastro', $data);
+    unset($_SESSION['register_errors']);
+}
+
     /**
      * Busca currículos com filtros
      */
@@ -127,29 +144,32 @@ class PageController
 
         $data = json_decode(file_get_contents('php://input'), true);
 
-        if (! $data || ! isset($data['answers']) || ! isset($data['questionIds'])) {
+        if (! $data || ! isset($data['respostas'])) {
             echo json_encode(['error' => 'Dados inválidos']);
             http_response_code(400);
             exit();
         }
 
-        $correct = 0;
-        for ($i = 0; $i < count($data['questionIds']); $i++) {
-            if ($this->pageModel->verificarResposta($data['questionIds'][$i], $data['answers'][$i])) {
+        $correct     = 0;
+        $questionIds = $data['perguntaIds'] ?? [];
+        $answers     = $data['respostas'];
+
+        for ($i = 0; $i < count($questionIds); $i++) {
+            if ($this->pageModel->verificarResposta($questionIds[$i], $answers[$i])) {
                 $correct++;
             }
         }
 
-        $percentage = round(($correct / count($data['questionIds'])) * 100);
+        $percentage = round(($correct / count($questionIds)) * 100);
         $userId     = $_SESSION['user_id'];
 
-        $this->pageModel->updateUserScore($userId, $correct, count($data['questionIds']));
+        $this->pageModel->updateUserScore($userId, $correct, count($questionIds));
 
         echo json_encode([
             'success'    => true,
             'correct'    => $correct,
             'percentage' => $percentage,
-            'redirect'   => BASE_URL,
+            'total'      => count($questionIds),
         ]);
         exit();
     }

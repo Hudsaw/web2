@@ -1,10 +1,10 @@
 <main class="container">
     <section class="card">
-        <h1><?php echo $dados['titulo']?></h1>
+        <h1><?php echo $title ?></h1>
 
         <div id="quiz-container">
         <div id="quiz-progress">
-    Pergunta <span id="pergunta-numero">1</span> de <?php echo isset($dados['totalPerguntas']) ? $dados['totalPerguntas'] : 0?>
+    Pergunta <span id="pergunta-numero">1</span> de                                                                                                       <?php echo isset($totalPerguntas) ? $totalPerguntas : 0 ?>
 </div>
 
             <div id="pergunta-area">
@@ -25,28 +25,28 @@
     <p id="resultado-texto"></p>
     <div class="quiz-actions">
         <button id="recomecar-quiz" class="btn">Recomeçar Quiz</button>
-        <a href="<?php echo BASE_URL?>/home" class="btn">Voltar ao Início</a>
+        <a href="<?php echo BASE_URL ?>" class="btn">Voltar ao Início</a>
     </div>
 </div>
 
 
             <script>
-                const perguntasQuiz = <?php echo json_encode($dados['perguntas'])?>;
+                const perguntasQuiz =                                                                           <?php echo json_encode($dados['perguntas']) ?>;
             </script>
         </div>
     </section>
 </main>
 
 <script>
-    
+
 document.addEventListener('DOMContentLoaded', function() {
     let perguntaAtual = 0;
     let respostas = [];
     let perguntaIds = [];
     let acertos = 0;
 
-    const perguntasQuiz = <?php echo json_encode($dados['perguntas'])?>;
-    const totalPerguntas = <?php echo $dados['totalPerguntas']?>;
+    const perguntasQuiz =                          <?php echo json_encode($perguntas) ?>;
+    const totalPerguntas =                           <?php echo $totalPerguntas ?>;
 
     // Elementos DOM
     const perguntaNumeroEl = document.getElementById('pergunta-numero');
@@ -129,31 +129,53 @@ document.addEventListener('DOMContentLoaded', function() {
         if (correta) acertos++;
 
         // Mostrar feedback
-        perguntaArea.style.display = 'none';
-        feedbackArea.style.display = 'block';
-
-        if (correta) {
-            feedbackMsg.innerHTML = '<span style="color: green;">✓ Resposta correta!</span>';
-        } else {
-            feedbackMsg.innerHTML = `
-                <span style="color: red;">✗ Resposta incorreta!</span><br>
-                A resposta correta é: <strong>${pergunta.resposta_correta}</strong>
-            `;
-        }
+        mostrarFeedback(correta, pergunta.resposta_correta);
     });
+
+    // Modifique a função que mostra o feedback
+function mostrarFeedback(correta, respostaCorreta) {
+    perguntaArea.style.display = 'none';
+    feedbackArea.style.display = 'block';
+
+    if (correta) {
+        feedbackMsg.innerHTML = '<span style="color: green;">✓ Resposta correta!</span>';
+    } else {
+        feedbackMsg.innerHTML = `
+            <span style="color: red;">✗ Resposta incorreta!</span><br>
+            A resposta correta é: <strong>${respostaCorreta}</strong>
+        `;
+    }
+
+    // Alterar o botão se for a última pergunta
+    if (perguntaAtual >= perguntasQuiz.length - 1) {
+        proximaBtn.textContent = 'Ver Resultado';
+        proximaBtn.onclick = finalizarQuiz;
+    } else {
+        proximaBtn.textContent = 'Próxima Pergunta';
+        proximaBtn.onclick = function() {
+            perguntaAtual++;
+            mostrarPergunta(perguntaAtual);
+        };
+    }
+}
 
     // Evento para próxima pergunta
-    proximaBtn.addEventListener('click', function() {
-        perguntaAtual++;
-        if (perguntaAtual < perguntasQuiz.length) {
-            mostrarPergunta(perguntaAtual);
-        } else {
-            finalizarQuiz();
-        }
-    });
+    confirmarBtn.addEventListener('click', function() {
+    const respostaSelecionada = document.querySelector('input[name="resposta"]:checked');
+    if (!respostaSelecionada) return;
+
+    const pergunta = perguntasQuiz[perguntaAtual];
+    respostas.push(respostaSelecionada.value);
+    perguntaIds.push(pergunta.id);
+
+    const correta = respostaSelecionada.value === pergunta.resposta_correta;
+    if (correta) acertos++;
+
+    mostrarFeedback(correta, pergunta.resposta_correta);
+});
 
     function finalizarQuiz() {
-    fetch('<?php echo BASE_URL?>/finalizar', {
+    fetch('<?php echo BASE_URL ?>/finalizar', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -180,18 +202,12 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackArea.style.display = 'none';
         resultadoFinal.style.display = 'block';
 
-        resultadoTexto.textContent = `Você acertou ${data.acertos} de 5 perguntas (${data.porcentagem}%). Sua nova pontuação média é ${data.novaPontuacao}%.`;
+        resultadoTexto.textContent = `Você acertou ${data.correct} de ${data.total} perguntas (${data.percentage}%).`;
 
-        // Atualizar header com a nova pontuação
-        const pontuacaoEl = document.querySelector('.user-score');
-        if (pontuacaoEl) {
-            pontuacaoEl.textContent = data.novaPontuacao + '%';
-        }
-
-        // Redirecionar após 5 segundos
+        // Redirecionar após 3 segundos
         setTimeout(() => {
-            window.location.href = data.redirect;
-        }, 5000);
+            window.location.href = '<?php echo BASE_URL ?>';
+        }, 3000);
     })
     .catch(error => {
         console.error('Erro:', error);

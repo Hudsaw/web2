@@ -1,12 +1,12 @@
 <main class="container">
     <section class="card">
-        <h1>Quiz: <?= htmlspecialchars($dados['titulo']) ?></h1>
+        <h1>Quiz: <?= htmlspecialchars($titulo) ?></h1>
         
         <form id="quiz-form" method="post" action="<?= BASE_URL ?>/resultado">
-            <input type="hidden" name="area_id" value="<?= $dados['areaId'] ?>">
-            <input type="hidden" name="nivel" value="<?= $dados['nivel'] ?>">
+            <input type="hidden" name="area_id" value="<?= $areaId ?>">
+            <input type="hidden" name="nivel" value="<?= $nivel ?>">
             
-            <?php foreach ($dados['perguntas'] as $index => $pergunta): ?>
+            <?php foreach ($perguntas as $index => $pergunta): ?>
                 <div class="pergunta">
                     <h3>Pergunta <?= $index + 1 ?>: <?= htmlspecialchars($pergunta['pergunta']) ?></h3>
                     
@@ -25,8 +25,8 @@
                             <label>
                                 <input type="radio" 
                                        name="respostas[<?= $pergunta['id'] ?>]" 
-                                       value="<?= htmlspecialchars($alternativa) ?>">
-                                <?= htmlspecialchars($alternativa) ?>
+                                       value=" <?= htmlspecialchars($alternativa) ?>">
+                                       &nbsp;<?= htmlspecialchars($alternativa) ?>
                             </label><br>
                         <?php endforeach; ?>
                     </div>

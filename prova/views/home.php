@@ -11,19 +11,10 @@
 
     <section class="card">
         <h2>Sobre o Quiz</h2>
-        <?php if (isset($dados['usuario']) && isset($dados['usuario']['avaliacao']) && isset($dados['usuario']['total_perguntas']) && $dados['usuario']['total_perguntas'] > 0): ?>
-            <span class="user-score">
-                <?= round(($dados['usuario']['avaliacao'] / $dados['usuario']['total_perguntas']) * 100) ?>% acertos
-            </span>
-        <?php elseif (isset($dados['usuario'])): ?>
-            <span class="user-score">
-                0% acertos
-            </span>
-        <?php endif; ?>
         <p>O Quiz ADS é um teste de conhecimento para avaliar as habilidades e competências dos candidatos para as vagas de ADS.</p>
         <div class="form-group">
             <a href="<?= BASE_URL ?>/quiz" class="btn btn-entrar">Jogar</a>
-            <a href="<?= BASE_URL ?>/adicionarpergunta" class="btn btn-entrar">Criar Pergunta</a>
+            <a href="<?= BASE_URL ?>/adicionar" class="btn btn-entrar">Criar Pergunta</a>
             <?php if (isset($dados['usuario']) && $dados['usuario']['tipo'] == 'admin'): ?>
                 <a href="<?= BASE_URL ?>/admin" class="btn btn-entrar">Gerenciar</a>
             <?php endif; ?>

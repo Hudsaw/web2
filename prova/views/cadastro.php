@@ -1,6 +1,6 @@
 <div class="container">
     <div class="card">
-        <h1><?= isset($_SESSION['id']) ? 'Editar Currículo' : 'Cadastre seu Currículo' ?></h1>
+        <h1><?= isset($_SESSION['user_id']) ? 'Editar Currículo' : 'Cadastre seu Currículo' ?></h1>
         
         <?php if (!empty($erros)): ?>
             <div class="alert alert-error">
@@ -10,8 +10,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>/<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>"class="form-cadastro">
-            
+        <form method="POST" action="<?= BASE_URL ?>/<?= isset($_SESSION['user_id']) ? 'atualizar' : 'cadastro' ?>" class="form-cadastro">            
             <!--Dados Pessoais-->
             <h3>Dados Pessoais</h3>
             <div class="form-group">
@@ -134,10 +133,11 @@
                 </div> 
             </div>
             <div id="actions">
-                <button type="submit" class="btn btn-primary"><?= isset($_SESSION['id']) ? 'Atualizar' : 'Criar Conta' ?></button>
-                <div class="auth-links">
-                    <span>Já tem uma conta?</span>
-                    <a href="<?= BASE_URL ?>/login" class="link-btn"> Faça login</a>
+            <button type="submit" class="btn btn-primary"><?= isset($_SESSION['user_id']) ? 'Atualizar' : 'Criar Conta' ?></button>
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <span>Já tem uma conta?</span>
+                        <a href="<?= BASE_URL ?>/login" class="link-btn"> Faça login</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </form>

@@ -33,12 +33,15 @@ class Router
     public function dispatch()
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $method = $_SERVER['REQUEST_METHOD'];
+    $method = $_SERVER['REQUEST_METHOD'];
 
-        if (BASE_PATH !== '' && strpos($uri, BASE_PATH) === 0) {
-            $uri = substr($uri, strlen(BASE_PATH));
-        }
-        $uri = $uri ?: '/';
+    if (BASE_PATH !== '' && strpos($uri, BASE_PATH) === 0) {
+        $uri = substr($uri, strlen(BASE_PATH));
+    }
+    $uri = $uri ?: '/';
+
+    // Parse query string parameters
+    parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $_GET);
     
 
         if (isset($this->routes[$method][$uri])) {

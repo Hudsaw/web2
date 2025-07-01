@@ -26,7 +26,7 @@
                                     <td><?= htmlspecialchars($curriculo['area_nome'] ?? 'Não informado') ?></td>
                                     <td><?= htmlspecialchars($curriculo['email']) ?></td>
                                     <td>
-                                        <a href="<?= BASE_URL ?>/curriculo&id=<?= $curriculo['id'] ?>" class="btn-ver">
+                                        <a href="<?= BASE_URL ?>/curriculo?id=<?= $curriculo['id'] ?>" class="btn-ver">
                                             Ver Currículo
                                         </a>
                                     </td>
@@ -40,7 +40,7 @@
                         <div class="paginacao">
                             <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                                 <div class="pagina">
-                                    <a  href="<?= BASE_URL ?>/busca&area=<?= $areaFiltro ?>&pagina=<?= $i ?>"
+                                    <a  href="<?= BASE_URL ?>/busca?area=<?= $areaFiltro ?>&pagina=<?= $i ?>"
                                     class="<?= $i == $paginaAtual ? 'ativo' : 'inativo' ?>">
                                     <?= $i ?>
                                     </a>
