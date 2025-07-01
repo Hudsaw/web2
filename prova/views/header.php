@@ -35,11 +35,11 @@
                             </div>
                             <div>
                                 <?php if ($usuarioLogado ?? false): ?>
-                                    <a href="<?= BASE_URL ?>?action=logout" class="btn-logout">
+                                    <a href="<?= BASE_URL ?>/logout" class="btn-logout">
                                         <span class="btn-text">Sair</span>
                                     </a>
                                 <?php else: ?>
-                                    <a href="<?= BASE_URL ?>?action=login" class="btn-login">
+                                    <a href="<?= BASE_URL ?>/login" class="btn-login">
                                         <span class="btn-text">Login</span>
                                     </a>
                                 <?php endif; ?>

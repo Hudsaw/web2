@@ -1,39 +1,38 @@
 <main class="container">
     <section class="hero card">
-    <h1><?= $dados['titulo'] ?? 'Bem-vindo' ?></h1>
-    <p><?= $dados['descricao'] ?? 'Sistema de avaliação de conhecimentos' ?></p>
+        <h1><?= $dados['titulo'] ?? 'Bem-vindo' ?></h1>
+        <p><?= $dados['descricao'] ?? 'Sistema de avaliação de conhecimentos' ?></p>
         <?php if (isset($dados['usuario'])): ?>
-            <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Editar cadastro</a>
+            <a href="<?= BASE_URL ?>/cadastro" class="btn">Editar cadastro</a>
         <?php else: ?>
-            <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Cadastre-se</a>
+            <a href="<?= BASE_URL ?>/cadastro" class="btn">Cadastre-se</a>
         <?php endif; ?>
     </section>
 
     <section class="card">
-            <h2>Sobre o Quiz</h2>
-            <?php if (isset($dados['usuario']) && isset($dados['usuario']['avaliacao']) && isset($dados['usuario']['total_perguntas']) && $dados['usuario']['total_perguntas'] > 0): ?>
-                <span class="user-score">
-                    <?= round(($dados['usuario']['avaliacao'] / $dados['usuario']['total_perguntas']) * 100) ?>% acertos
-                </span>
-            <?php elseif (isset($dados['usuario'])): ?>
-                <span class="user-score">
-                    0% acertos
-                </span>
-            <?php endif; ?>
+        <h2>Sobre o Quiz</h2>
+        <?php if (isset($dados['usuario']) && isset($dados['usuario']['avaliacao']) && isset($dados['usuario']['total_perguntas']) && $dados['usuario']['total_perguntas'] > 0): ?>
+            <span class="user-score">
+                <?= round(($dados['usuario']['avaliacao'] / $dados['usuario']['total_perguntas']) * 100) ?>% acertos
+            </span>
+        <?php elseif (isset($dados['usuario'])): ?>
+            <span class="user-score">
+                0% acertos
+            </span>
+        <?php endif; ?>
         <p>O Quiz ADS é um teste de conhecimento para avaliar as habilidades e competências dos candidatos para as vagas de ADS.</p>
         <div class="form-group">
-        <a href="<?= BASE_URL ?>?action=quiz" class="btn btn-entrar">Jogar</a>
-        <a href="<?= BASE_URL ?>?action=adicionarPergunta" class="btn btn-entrar">Criar Pergunta</a>
-        <?php if (isset($dados['usuario']) && $dados['usuario']['tipo'] == 'admin'): ?>
-    <a href="<?= BASE_URL ?>?action=admin" class="btn btn-entrar">Gerenciar</a>
-<?php endif; ?>
+            <a href="<?= BASE_URL ?>/quiz" class="btn btn-entrar">Jogar</a>
+            <a href="<?= BASE_URL ?>/adicionarpergunta" class="btn btn-entrar">Criar Pergunta</a>
+            <?php if (isset($dados['usuario']) && $dados['usuario']['tipo'] == 'admin'): ?>
+                <a href="<?= BASE_URL ?>/admin" class="btn btn-entrar">Gerenciar</a>
+            <?php endif; ?>
         </div>
     </section>
 
     <section class="card">
         <h2>Buscar Currículos</h2>
-        <form method="get" action="<?= BASE_URL ?>" class="search-form">
-            <input type="hidden" name="action" value="busca">
+        <form method="get" action="<?= BASE_URL ?>/busca" class="search-form">
             <div class="form-group">
                 <label for="area">Filtrar por Área:</label>
                 <select name="area" id="area">
@@ -48,16 +47,7 @@
                 </select>
             </div>
             <button type="submit" class="btn btn-buscar">Filtrar</button>
-            <a href="<?= BASE_URL ?>?action=busca" class="btn btn-todos">Ver todos os currículos</a>
+            <a href="<?= BASE_URL ?>/busca" class="btn btn-todos">Ver todos os currículos</a>
         </form>
-    </section>
-
-    <section class="card">
-        <h2>O que oferecemos</h2>
-        <ul>
-            <li>✔ Banco de talentos qualificados</li>
-            <li>✔ Parcerias com empresas líderes de mercado</li>
-            <li>✔ Visibilidade real para profissionais de destaque</li>
-        </ul>
     </section>
 </main>

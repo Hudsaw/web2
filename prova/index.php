@@ -18,6 +18,7 @@ $router = new Router($container);
 // Rotas principais
 $router->get('/', 'PageController@home');
 $router->get('/busca', 'PageController@buscarCurriculos');
+$router->get('/curriculo', 'PageController@mostrarCurriculo');
 
 // Rotas de autenticação
 $router->get('/login', 'AuthController@showLogin');
@@ -29,12 +30,12 @@ $router->post('/cadastro', 'AuthController@register');
 // Rotas do quiz
 $router->get('/quiz', 'PageController@mostrarQuiz');
 $router->get('/jogar', 'PageController@iniciarQuiz');
-$router->post('/processar-quiz', 'PageController@processQuiz');
+$router->post('/finalizar', 'PageController@finalizarQuiz');
 
 // Rotas administrativas (protegidas)
 $router->get('/admin', 'PageController@gerenciarQuiz', ['AuthMiddleware']);
-$router->post('/adicionar-pergunta', 'PageController@adicionarPergunta', ['AuthMiddleware']);
-$router->post('/excluir-pergunta', 'PageController@excluirPergunta', ['AuthMiddleware']);
-$router->post('/toggle-status', 'PageController@toggleStatus', ['AuthMiddleware']);
+$router->post('/adicionar', 'PageController@adicionarPergunta', ['AuthMiddleware']);
+$router->post('/excluir', 'PageController@excluirPergunta', ['AuthMiddleware']);
+$router->post('/toggleStatus', 'PageController@toggleStatus', ['AuthMiddleware']);
 
 $router->dispatch();

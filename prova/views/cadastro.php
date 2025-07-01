@@ -10,7 +10,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="?action=<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>"class="form-cadastro">
+        <form method="POST" action="<?= BASE_URL ?>/<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>"class="form-cadastro">
             
             <!--Dados Pessoais-->
             <h3>Dados Pessoais</h3>
@@ -137,7 +137,7 @@
                 <button type="submit" class="btn btn-primary"><?= isset($_SESSION['id']) ? 'Atualizar' : 'Criar Conta' ?></button>
                 <div class="auth-links">
                     <span>Já tem uma conta?</span>
-                    <a href="?action=login" class="link-btn"> Faça login</a>
+                    <a href="<?= BASE_URL ?>/login" class="link-btn"> Faça login</a>
                 </div>
             </div>
         </form>

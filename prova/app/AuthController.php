@@ -29,7 +29,7 @@ class AuthController
         }
 
         $email = strtolower(trim($_POST['email']));
-        $password = $_POST['password'];
+        $password = $_POST['senha'];
 
         $user = $this->userModel->authenticate($email, $password);
 
@@ -37,8 +37,6 @@ class AuthController
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['nome'];
             $_SESSION['user_role'] = $user['tipo'];
-
-            $this->userModel->updateLastLogin($user['id']);
 
             $redirect = $_SESSION['redirect_url'] ?? '/';
             unset($_SESSION['redirect_url']);
@@ -58,7 +56,7 @@ class AuthController
             'areas' => $this->userModel->getAreasAtuacao()
         ];
         
-        $this->render('register', $data);
+        $this->render('cadastro', $data);
         unset($_SESSION['register_errors'], $_SESSION['register_data']);
     }
 
@@ -73,7 +71,7 @@ class AuthController
         if (isset($data['errors'])) {
             $_SESSION['register_errors'] = $data['errors'];
             $_SESSION['register_data'] = $_POST;
-            $this->redirect('/register');
+            $this->redirect('/cadastro');
         }
 
         $userId = $this->userModel->createUser($data);
@@ -85,7 +83,7 @@ class AuthController
         }
 
         $_SESSION['register_errors'] = ['Falha ao criar usuário'];
-        $this->redirect('/register');
+        $this->redirect('/cadastro');
     }
 
     public function logout()

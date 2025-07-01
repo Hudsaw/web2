@@ -7,7 +7,7 @@
             <?php unset($_SESSION['erro']); ?>
         <?php endif; ?>
         
-        <form id="formPergunta" method="POST" action="<?= BASE_URL ?>?action=cadastrarPergunta">
+        <form id="formPergunta" method="POST" action="<?= BASE_URL ?>/cadastrarPergunta">
             <!-- Campos do formulário -->
             <div class="form-group">
                 <label for="pergunta">Pergunta:</label>

@@ -2,7 +2,7 @@
     <section class="card">
         <h1>Quiz: <?= htmlspecialchars($dados['titulo']) ?></h1>
         
-        <form id="quiz-form" method="post" action="<?= BASE_URL ?>?action=resultado">
+        <form id="quiz-form" method="post" action="<?= BASE_URL ?>/resultado">
             <input type="hidden" name="area_id" value="<?= $dados['areaId'] ?>">
             <input type="hidden" name="nivel" value="<?= $dados['nivel'] ?>">
             

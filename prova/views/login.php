@@ -8,7 +8,7 @@
             </div>
         <?php endif; ?>
 
-        <form class="auth-form" method="POST" action="<?= BASE_URL ?>?action=login">
+        <form class="auth-form" method="POST" action="<?= BASE_URL ?>/login">
             <div class="form-group" id="email-container">
                 <label for="email">E-mail</label>
                 <input class="input" type="email" id="email" name="email" required
@@ -30,7 +30,7 @@
                     <p>É novo aqui?</p>
                 </div>
                 <div>
-                    <a href="<?= BASE_URL ?>?action=cadastro.php" class="link-btn">Criar nova conta</a>
+                    <a href="<?= BASE_URL ?>/cadastro" class="link-btn">Criar nova conta</a>
                 </div>
             </div>  
         

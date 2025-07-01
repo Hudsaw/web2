@@ -1,56 +1,30 @@
-<div class="container">
-    <div class="card">
-        <div class="curriculo-header">
-            <h1><?= htmlspecialchars($curriculo['nome'] ?? 'Nome não disponível') ?></h1>
-            <section id="pessoais">
-
-                <?php if (!empty($curriculo['area_nome'])): ?>
-                    <p><strong>Área:</strong> <?= htmlspecialchars($curriculo['area_nome']) ?></p>
-                <?php endif; ?>
-
-                <p><strong>E-mail:</strong> <?= htmlspecialchars($curriculo['email'] ?? 'Não informado') ?></p>
+<main class="container">
+    <section class="card">
+        <?php if (isset($curriculo)): ?>
+            <h1>Currículo de <?= htmlspecialchars($curriculo['nome']) ?></h1>
+            
+            <div class="curriculo-detalhes">
+                <h2>Informações Pessoais</h2>
+                <p><strong>Nome:</strong> <?= htmlspecialchars($curriculo['nome']) ?></p>
+                <p><strong>Email:</strong> <?= htmlspecialchars($curriculo['email']) ?></p>
                 <p><strong>Telefone:</strong> <?= htmlspecialchars($curriculo['telefone'] ?? 'Não informado') ?></p>
-
-                <?php if (!empty($curriculo['resumo'])): ?>
-                    <div class="resumo">
-                        <h3>Resumo Profissional</h3>
-                        <p><?= nl2br(htmlspecialchars($curriculo['resumo'])) ?></p>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (!empty($curriculo['escolaridade'])): ?>
-                    <div class="escolaridade">
-                        <h3>Escolaridade</h3>
-                        <p><?= ucfirst(htmlspecialchars($curriculo['escolaridade'])) ?></p>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (!empty($curriculo['experiencias'])): ?>
-                    <div class="experiencias">
-                        <h3>Experiências Profissionais</h3>
-                        <p><?= nl2br(htmlspecialchars($curriculo['experiencias'])) ?></p>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (!empty($curriculo['linkedin']) || !empty($curriculo['github'])): ?>
-                    <div class="redes-sociais">
-                        <h3>Redes Sociais</h3>
-                        <?php if (!empty($curriculo['linkedin'])): ?>
-                            <p><a href="<?= htmlspecialchars($curriculo['linkedin']) ?>" target="_blank" class="btn-ver">LinkedIn</a></p>
-                        <?php endif; ?>
-                        <?php if (!empty($curriculo['github'])): ?>
-                            <p><a href="<?= htmlspecialchars($curriculo['github']) ?>" target="_blank" class="btn-ver">GitHub</a></p>
-                        <?php endif; ?>
-                    </div>
-                <?php endif; ?>
-            </section>
-            <?php if (!empty($curriculo['editar'])): ?>
-                <div class="text-right">
-                    <a href="../?action=cadastro.php" class="btn">
-                        Editar Currículo
-                    </a>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
+                
+                <h2>Área de Atuação</h2>
+                <p><?= htmlspecialchars($curriculo['area_nome'] ?? 'Não informada') ?></p>
+                
+                <h2>Experiência Profissional</h2>
+                <p><?= nl2br(htmlspecialchars($curriculo['experiencia'] ?? 'Não informada')) ?></p>
+                
+                <h2>Formação Acadêmica</h2>
+                <p><?= nl2br(htmlspecialchars($curriculo['formacao'] ?? 'Não informada')) ?></p>
+                
+                <h2>Pontuação no Quiz</h2>
+                <p><?= isset($curriculo['avaliacao']) ? $curriculo['avaliacao'] . '%' : 'Ainda não avaliado' ?></p>
+            </div>
+            
+            <a href="<?= BASE_URL ?>/busca" class="btn">Voltar para a busca</a>
+        <?php else: ?>
+            <p class="error">Currículo não encontrado.</p>
+        <?php endif; ?>
+    </section>
+</main>

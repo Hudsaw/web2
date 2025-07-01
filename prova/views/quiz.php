@@ -25,7 +25,7 @@
     <p id="resultado-texto"></p>
     <div class="quiz-actions">
         <button id="recomecar-quiz" class="btn">Recomeçar Quiz</button>
-        <a href="<?php echo BASE_URL?>?action=home" class="btn">Voltar ao Início</a>
+        <a href="<?php echo BASE_URL?>/home" class="btn">Voltar ao Início</a>
     </div>
 </div>
 
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function finalizarQuiz() {
-    fetch('<?php echo BASE_URL?>?action=processarQuiz', {
+    fetch('<?php echo BASE_URL?>/finalizar', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
