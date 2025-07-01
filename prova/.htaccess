@@ -1,10 +1,14 @@
 RewriteEngine On
-RewriteBase /prova/
+RewriteBase /web2/prova/
 
-# Front Controller para ações principais
+# Desativa rewrite para requisições POST
+RewriteCond %{REQUEST_METHOD} POST
+RewriteRule ^ - [L]
+
+# Front Controller para outras requisições
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?action=$1 [L,QSA]
 
-# Rotas amigáveis para currículos
-RewriteRule ^curriculo/([0-9]+)$ curriculo.php?id=$1 [L]
+php_value display_errors On
+php_value date.timezone America/Belem

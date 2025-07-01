@@ -12,12 +12,13 @@ $nomeUsuario = $usuarioLogado ? ($_SESSION['nome'] ?? 'Usuário') : 'Visitante';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curriculum Premium</title>
+    <title>Curriculum Quiz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="light-theme">
+    
     <header>
         <div class="container">
             <div class="header-container">
@@ -28,26 +29,31 @@ $nomeUsuario = $usuarioLogado ? ($_SESSION['nome'] ?? 'Usuário') : 'Visitante';
                         </div>
                         <div id="espacador">.</div>
                         <div>
-                <a href="<?= BASE_URL ?>" class="logo">Curriculum Premium</a>
+                            <a href="<?= BASE_URL ?>" class="logo-text">Curriculum Quiz</a>
                         </div>
                     </div>
-                    </a>
 
                     <nav class="nav-user">
                         <div class="user-greeting">
                             <span>Olá, <?= htmlspecialchars($nomeUsuario) ?>!</span>
                         </div>
-
-                        <?php if ($usuarioLogado): ?>
-                            <a href="<?= BASE_URL ?>?action=logout" class="btn-logout">
-                                <span class="btn-text">Sair</span>
-                            </a>
-                        <?php else: ?>
-                            <a href="<?= BASE_URL ?>?action=login" class="btn-login">
-                                <span class="btn-text">Login</span>
-                            </a>
-                            </a>
-                        <?php endif; ?>
+                        <div class="user-actions">
+                            <div>
+                                <button class="theme-switcher"></button>
+                            </div>
+                            <div>
+                                <?php if ($usuarioLogado): ?>
+                                    <a href="<?= BASE_URL ?>?action=logout" class="btn-logout">
+                                        <span class="btn-text">Sair</span>
+                                    </a>
+                                <?php else: ?>
+                                    <a href="<?= BASE_URL ?>?action=login" class="btn-login">
+                                        <span class="btn-text">Login</span>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </nav>
+                </nav>
             </div>
     </header>

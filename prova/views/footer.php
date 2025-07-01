@@ -24,9 +24,10 @@
         </div>
         
         <div class="copyright">
-            <p>&copy; <?= date('Y') ?> Todos os direitos reservados</p>
+            <p>&copy; <?= date('Y') ?> Todos os direitos reservados <br> Edson Silva Jr. - Guilherme Tscha - Hudson Borges</p>
         </div>
     </div>
 </footer>
+<script src="theme.js"></script>
 </body>
 </html>

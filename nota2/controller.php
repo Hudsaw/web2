@@ -94,28 +94,34 @@ class MainController
     }
 
     public function processarLogin()
-    {
-        error_log("processarLogin");
-        $email = strtolower(trim($_POST['email']));
-        $senha = $_POST['senha'];
+{
+    error_log("processarLogin");
+    $email = strtolower(trim($_POST['email']));
+    $senha = $_POST['senha'];
 
-        $usuario = $this->model->getUserByEmail($email);
+    $usuario = $this->model->getUserByEmail($email);
+    
+    error_log("Usuário encontrado: " . print_r($usuario, true));
+    error_log("Senha fornecida: " . $senha);
+    error_log("Hash armazenado: " . ($usuario['senha'] ?? 'N/A'));
 
-        if ($usuario && password_verify($senha, $usuario['senha'])) {
-            $_SESSION['id']   = $usuario['id'];
-            $_SESSION['nome'] = $usuario['nome'];
+    if ($usuario && password_verify($senha, $usuario['senha'])) {
+        $_SESSION['id'] = $usuario['id'];
+        $_SESSION['nome'] = $usuario['nome'];
+        $_SESSION['tipo_usuario'] = $usuario['tipo'];
+        $_SESSION['pontuacao'] = $usuario['avaliacao'] ?? 0;
 
-            $redirect = $_SESSION['redirect_url'] ?? 'index.php?action=home';
-            unset($_SESSION['redirect_url']);
+        $redirect = $_SESSION['redirect_url'] ?? 'index.php?action=home';
+        unset($_SESSION['redirect_url']);
 
-            header("Location: " . BASE_URL . $redirect);
-            exit();
-        } else {
-            $_SESSION['erro_login'] = "Credenciais inválidas";
-            header("Location: " . BASE_URL . "?action=login");
-            exit();
-        }
+        header("Location: " . BASE_URL . $redirect);
+        exit();
+    } else {
+        $_SESSION['erro_login'] = "Credenciais inválidas";
+        header("Location: " . BASE_URL . "?action=login");
+        exit();
     }
+}
 
     public function logout()
     {
@@ -365,76 +371,79 @@ class MainController
     }
 
     public function processarQuiz()
-{
-    header('Content-Type: application/json');
-    
-    if (!isset($_SESSION['id'])) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Não autenticado']);
-        exit();
-    }
+    {
+        header('Content-Type: application/json');
 
-    try {
-        $userId = $_SESSION['id'];
-        $data = json_decode(file_get_contents('php://input'), true);
-        
-        if (!$data || !isset($data['respostas']) || !isset($data['perguntaIds'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Dados inválidos']);
+        if (! isset($_SESSION['id'])) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Não autenticado']);
             exit();
         }
 
-        $respostas = $data['respostas'];
-        $perguntaIds = $data['perguntaIds'];
+        try {
+            $userId = $_SESSION['id'];
+            $data   = json_decode(file_get_contents('php://input'), true);
 
-        if (count($respostas) !== 5 || count($perguntaIds) !== 5) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Número inválido de respostas']);
-            exit();
-        }
-
-        // Verifica respostas e calcula acertos
-        $acertos = 0;
-        for ($i = 0; $i < 5; $i++) {
-            if ($this->model->verificarResposta($perguntaIds[$i], $respostas[$i])) {
-                $acertos++;
+            if (! $data || ! isset($data['respostas']) || ! isset($data['perguntaIds'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Dados inválidos']);
+                exit();
             }
+
+            $respostas   = $data['respostas'];
+            $perguntaIds = $data['perguntaIds'];
+
+            if (count($respostas) !== 5 || count($perguntaIds) !== 5) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Número inválido de respostas']);
+                exit();
+            }
+
+            // Verifica respostas e calcula acertos
+            $acertos = 0;
+            for ($i = 0; $i < 5; $i++) {
+                if ($this->model->verificarResposta($perguntaIds[$i], $respostas[$i])) {
+                    $acertos++;
+                }
+            }
+
+            $porcentagem = round(($acertos / 5) * 100);
+
+            // Obter pontuação atual do usuário
+            $usuario             = $this->model->getUserById($userId);
+            $pontuacaoAtual      = $usuario['avaliacao'] ?? 0;
+            $totalPerguntasAtual = $usuario['total_perguntas'] ?? 0;
+
+            // Calcular nova pontuação (média ponderada)
+            $novaPontuacao = round(($pontuacaoAtual * $totalPerguntasAtual + $porcentagem * 5) / ($totalPerguntasAtual + 5));
+            $novoTotal     = $totalPerguntasAtual + 5;
+
+            // Atualiza a pontuação do usuário no banco de dados
+            $success = $this->model->atualizarPontuacao($userId, $novaPontuacao, $novoTotal);
+
+            if (! $success) {
+                throw new Exception("Falha ao atualizar pontuação no banco de dados");
+            }
+
+            // Atualiza a sessão com a nova pontuação
+            $_SESSION['pontuacao'] = $novaPontuacao;
+
+            echo json_encode([
+                'success'       => true,
+                'acertos'       => $acertos,
+                'porcentagem'   => $porcentagem,
+                'novaPontuacao' => $novaPontuacao,
+                'redirect'      => BASE_URL . '?action=home',
+            ]);
+            exit();
+
+        } catch (Exception $e) {
+            error_log("Erro ao processar quiz: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+            exit();
         }
-
-        $porcentagem = round(($acertos / 5) * 100);
-
-        // Obter pontuação atual do usuário
-        $usuario = $this->model->getUserById($userId);
-        $pontuacaoAtual = $usuario['avaliacao'] ?? 0;
-        $totalPerguntasAtual = $usuario['total_perguntas'] ?? 0;
-
-        // Calcular nova pontuação (média ponderada)
-        $novaPontuacao = round(($pontuacaoAtual * $totalPerguntasAtual + $porcentagem * 5) / ($totalPerguntasAtual + 5));
-        $novoTotal = $totalPerguntasAtual + 5;
-
-        // Atualiza a pontuação do usuário no banco de dados
-        $success = $this->model->atualizarPontuacao($userId, $novaPontuacao, $novoTotal);
-        
-        if (!$success) {
-            throw new Exception("Falha ao atualizar pontuação no banco de dados");
-        }
-
-        echo json_encode([
-            'success' => true,
-            'acertos' => $acertos,
-            'porcentagem' => $porcentagem,
-            'novaPontuacao' => $novaPontuacao,
-            'redirect' => BASE_URL . '?action=home'
-        ]);
-        exit();
-        
-    } catch (Exception $e) {
-        error_log("Erro ao processar quiz: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode(['error' => $e->getMessage()]);
-        exit();
     }
-}
 
     public function gerenciar()
     {
@@ -536,8 +545,6 @@ class MainController
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 throw new Exception("Método inválido");
             }
-
-            error_log("Dados POST recebidos: " . print_r($_POST, true));
 
             $dados = $this->validarDadosPergunta($_POST);
 

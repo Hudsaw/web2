@@ -1,4 +1,3 @@
-php
 <div class="container">
     <div class="card">
         <div class="curriculo-header">
@@ -37,17 +36,17 @@ php
                     <div class="redes-sociais">
                         <h3>Redes Sociais</h3>
                         <?php if (!empty($curriculo['linkedin'])): ?>
-                            <p><a href="<?= htmlspecialchars($curriculo['linkedin']) ?>" target="_blank">LinkedIn</a></p>
+                            <p><a href="<?= htmlspecialchars($curriculo['linkedin']) ?>" target="_blank" class="btn-ver">LinkedIn</a></p>
                         <?php endif; ?>
                         <?php if (!empty($curriculo['github'])): ?>
-                            <p><a href="<?= htmlspecialchars($curriculo['github']) ?>" target="_blank">GitHub</a></p>
+                            <p><a href="<?= htmlspecialchars($curriculo['github']) ?>" target="_blank" class="btn-ver">GitHub</a></p>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
             </section>
             <?php if (!empty($curriculo['editar'])): ?>
                 <div class="text-right">
-                    <a href="<?= BASE_URL ?>?action=cadastro" class="btn">
+                    <a href="../?action=cadastro.php" class="btn">
                         Editar Currículo
                     </a>
                 </div>

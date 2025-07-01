@@ -80,9 +80,9 @@ class Model
 
             $query = "INSERT INTO cadastro
              (nome, email, cpf, telefone, cep, complemento, linkedin, github,
-             escolaridade, resumo, experiencias, senha, area_atuacao_id)
+             escolaridade, resumo, experiencias, senha, area_atuacao_id, tipo)
              VALUES (:nome, :email, :cpf, :telefone, :cep, :complemento, :linkedin, :github,
-             :escolaridade, :resumo, :experiencias, :senha, :area_atuacao_id)";
+             :escolaridade, :resumo, :experiencias, :senha, :area_atuacao_id, 'candidato')";
 
             $stmt = $this->pdo->prepare($query);
 

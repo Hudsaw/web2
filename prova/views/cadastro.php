@@ -10,25 +10,26 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="<?= BASE_URL ?>?action=<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>"class="form-cadastro">
+        <form method="POST" action="?action=<?= isset($_SESSION['id']) ? 'atualizar' : 'cadastro' ?>"class="form-cadastro">
+            
+            <!--Dados Pessoais-->
             <h3>Dados Pessoais</h3>
-
             <div class="form-group">
-                <input type="text" name="nome" placeholder="Nome completo" required
-                    placeholder="Nome completo"
+                <label for="nome">Nome completo</label>
+                <input class="input" id="nome" type="text" name="nome" required
                     value="<?php echo htmlspecialchars($dados['nome'] ?? ''); ?>">
             </div>
 
             <div class="form-group">
-                <input type="text" id="telefone" name="telefone" required
-                    placeholder="Telefone (com DDD)"
+                <label for="telefone">Telefone (com DDD)</label>
+                <input class="input" id="telefone" type="text" name="telefone" required
                     pattern="[0-9]{10,11}" title="10 ou 11 dígitos"
                     value="<?php echo htmlspecialchars($dados['telefone'] ?? ''); ?>">
             </div>
 
             <div class="form-group">
-                <input type="text" id="cpf" name="cpf" required
-                    placeholder="CPF (somente números)"
+                <label for="cpf">CPF (somente números)</label>
+                <input class="input" type="text" id="cpf" name="cpf" required
                     pattern="\d{11}" title="11 dígitos sem pontuação"
                     value="<?php echo htmlspecialchars($dados['cpf'] ?? ''); ?>">
             </div>
@@ -36,35 +37,40 @@
             <!-- Endereço -->
             <div class="form-section">
                 <h3>Endereço</h3>
-                <div class="form-group">
-                    <input type="text" id="cep" name="cep" required
-                        placeholder="CEP"
-                        pattern="\d{8}" title="8 dígitos"
+                <div class="form-endereco">
+                <small id="cep-info"></small>
+                    <div id="cep-container">
+                    
+                        <div class="form-group">
+                            <label for="cep">CEP (somente números)</label>
+                            <input class="input" type="text" id="cep" name="cep" required  pattern="\d{8}" title="8 dígitos"
                         value="<?php echo htmlspecialchars($dados['cep'] ?? ''); ?>">
-                    <small id="cep-info" style="display: block; margin-top: 5px;"></small>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="logradouro" name="logradouro" required readonly
-                        placeholder="Logradouro"
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="logradouro">Logradouro</label>
+                        <input class="input" type="text" id="logradouro" name="logradouro" required readonly
                         value="<?php echo htmlspecialchars($dados['logradouro'] ?? ''); ?>">
-                </div>
-                <div class="form-group">
-                    <input type="text" id="complemento" name="complemento" required
-                        placeholder="Número, bloco, apartamento"
+                    </div>
+                    <div class="form-group">
+                        <label for="complemento">Complemento</label>
+                        <input class="input" type="text" id="complemento" name="complemento" required
                         value="<?php echo htmlspecialchars($dados['complemento'] ?? ''); ?>">
-                </div>
-
-                <div class="form-group">
-                    <input type="text" id="cidade" name="cidade" required readonly
-                        placeholder="Cidade"
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade">Cidade</label>
+                        <input class="input" type="text" id="cidade" name="cidade" required readonly
                         value="<?php echo htmlspecialchars($dados['cidade'] ?? ''); ?>">
-                </div>
+                    </div>
+                </div>    
             </div>
 
             <!-- Dados Profissionais -->
+
+            <h3>Dados Profissionais</h3>
             <div class="form-group">
-                <h3>Dados Profissionais</h3>
-                <select id="select" name="area_atuacao_id" required>
+                <label for="select1">Área de atuação</label>
+                <select id="select1" name="area_atuacao_id" required>
                     <option value="">Selecione sua área de atuação</option>
                     <?php foreach ($areas as $area): ?>
                         <option value="<?= $area['id'] ?>"
@@ -75,62 +81,66 @@
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="form-group" id="resumo-container">
-                <input type="text" id="resumo" name="resumo"
-                    placeholder="Resumo da carreira"
-                    value="<?php echo htmlspecialchars($dados['resumo'] ?? ''); ?>">
-            </div>
-
             <div class="form-group">
-                <select id="select" name="escolaridade" required>
+                <label for="select2">Escolaridade</label>
+                <select id="select2" name="escolaridade" required>
                     <option value="" disabled selected>Selecione sua escolaridade</option>
                     <option value="fundamental" <?php echo (isset($dados['escolaridade'])) && $dados['escolaridade'] === 'fundamental' ? 'selected' : ''; ?>>Fundamental Completo</option>
                     <option value="medio" <?php echo (isset($dados['escolaridade'])) && $dados['escolaridade'] === 'medio' ? 'selected' : ''; ?>>Médio Completo</option>
                     <option value="superior" <?php echo (isset($dados['escolaridade'])) && $dados['escolaridade'] === 'superior' ? 'selected' : ''; ?>>Superior Completo</option>
                 </select>
             </div>
+            <div class="form-group" id="resumo-container">
+                <label for="resumo">Resumo da carreira</label>
+                <textarea class="input" id="resumo" name="resumo"><?php echo htmlspecialchars($dados['resumo'] ?? ''); ?></textarea>
+            </div>
 
             <div class="form-group" id="experiencias-container">
-                <input type="text" id="experiencias" name="experiencias"
-                    placeholder="Experiencias Profissionais"
-                    value="<?php echo htmlspecialchars($dados['experiencias'] ?? ''); ?>">
+                <label for="experiencias">Experiências Profissionais</label>
+                <textarea class="input" id="experiencias" name="experiencias"><?php echo htmlspecialchars($dados['experiencias'] ?? ''); ?></textarea>
             </div>
+
+            <!-- Links -->
+            <h3>Links</h3>
             <div class="form-group" id="linkedin-container">
-                <input type="text" id="linkedin" name="linkedin"
-                    placeholder="Link do linkedin"
+                <label for="linkedin">Link do LinkedIn</label>
+                <input class="input" type="text" id="linkedin" name="linkedin"
+                    placeholder="Link do LinkedIn"
                     value="<?php echo htmlspecialchars($dados['linkedin'] ?? ''); ?>">
             </div>
             <div class="form-group" id="github-container">
-                <input type="text" id="github" name="github"
-                    placeholder="Link do github"
+                <label for="github">Link do GitHub</label>
+                <input class="input" type="text" id="github" name="github"
+                    placeholder="Link do GitHub"
                     value="<?php echo htmlspecialchars($dados['github'] ?? ''); ?>">
             </div>
 
             <!-- Segurança -->
             <div class="form-section">
                 <h3>Segurança</h3>
-                <div class="form-group">
-                    <input type="email" id="email" name="email" required
-                        placeholder="E-mail"
-                        value="<?php echo htmlspecialchars($dados['email'] ?? ''); ?>">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="senha" name="senha" required
-                        placeholder="Senha (mínimo 8 caracteres)">
-                </div>
-
-                <div class="form-group">
-                    <input type="password" id="confirmar_senha" name="confirmar_senha" required
-                        placeholder="Confirmar Senha">
+                <div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input class="input" type="email" id="email" name="email" required value="<?php echo htmlspecialchars($dados['email'] ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <input class="input" type="password" id="senha" name="senha" required value="<?php echo htmlspecialchars($dados['senha'] ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmar_senha">Confirmar Senha</label>
+                        <input class="input" type="password" id="confirmar_senha" name="confirmar_senha" required value="<?php echo htmlspecialchars($dados['confirmar_senha'] ?? ''); ?>">
+                    </div>
+                </div> 
+            </div>
+            <div id="actions">
+                <button type="submit" class="btn btn-primary"><?= isset($_SESSION['id']) ? 'Atualizar' : 'Criar Conta' ?></button>
+                <div class="auth-links">
+                    <span>Já tem uma conta?</span>
+                    <a href="?action=login" class="link-btn"> Faça login</a>
                 </div>
             </div>
-
-            <button type="submit" class="btn btn-primary"><?= isset($_SESSION['id']) ? 'Atualizar' : 'Criar Conta' ?></button>
         </form>
-
-        <div class="auth-links">
-            <a href="<?php echo BASE_URL; ?>?action=login">Já tem uma conta? Faça login</a>
-        </div>
     </div>
 </div>
 

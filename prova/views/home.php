@@ -1,11 +1,36 @@
 <main class="container">
     <section class="hero card">
         <h1><?= $dados['titulo'] ?></h1>
-        <p><?= $dados['descricao'] ?></p>
-        <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Cadastre seu currículo</a>
+            <p><?= $dados['descricao'] ?></p>
+        <?php if (isset($dados['usuario'])): ?>
+            <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Editar cadastro</a>
+        <?php else: ?>
+            <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Cadastre-se</a>
+        <?php endif; ?>
     </section>
 
-     <section class="card">
+    <section class="card">
+            <h2>Sobre o Quiz</h2>
+            <?php if (isset($dados['usuario']) && isset($dados['usuario']['avaliacao']) && isset($dados['usuario']['total_perguntas']) && $dados['usuario']['total_perguntas'] > 0): ?>
+                <span class="user-score">
+                    <?= round(($dados['usuario']['avaliacao'] / $dados['usuario']['total_perguntas']) * 100) ?>% acertos
+                </span>
+            <?php elseif (isset($dados['usuario'])): ?>
+                <span class="user-score">
+                    0% acertos
+                </span>
+            <?php endif; ?>
+        <p>O Quiz ADS é um teste de conhecimento para avaliar as habilidades e competências dos candidatos para as vagas de ADS.</p>
+        <div class="form-group">
+        <a href="<?= BASE_URL ?>?action=quiz" class="btn btn-entrar">Jogar</a>
+        <a href="<?= BASE_URL ?>?action=adicionarPergunta" class="btn btn-entrar">Criar Pergunta</a>
+        <?php if (isset($dados['usuario']) && $dados['usuario']['tipo'] == 'admin'): ?>
+    <a href="<?= BASE_URL ?>?action=admin" class="btn btn-entrar">Gerenciar</a>
+<?php endif; ?>
+        </div>
+    </section>
+
+    <section class="card">
         <h2>Buscar Currículos</h2>
         <form method="get" action="<?= BASE_URL ?>" class="search-form">
             <input type="hidden" name="action" value="busca">

@@ -3,8 +3,9 @@
         <h1>Resultados da Busca</h1>
 
         <?php if (!empty($areaFiltro)): ?>
-            <p>Filtrando por: <?= htmlspecialchars($areas[$areaFiltro]['nome'] ?? 'Área desconhecida') ?></p>
+            <p>Filtrando por: <?= htmlspecialchars($areas[$areaFiltro-1]['nome'] ?? 'Área desconhecida') ?></p>
         <?php endif; ?>
+        
 
         <div class="resultados">
             <?php if (!empty($resultados)): ?>
@@ -38,10 +39,12 @@
                     <?php if ($totalPaginas > 1): ?>
                         <div class="paginacao">
                             <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                                <a href="<?= BASE_URL ?>?action=busca&area=<?= $areaFiltro ?>&pagina=<?= $i ?>"
-                                    class="<?= $i == $paginaAtual ? 'ativo' : '' ?>">
+                                <div class="pagina">
+                                    <a  href="<?= BASE_URL ?>?action=busca&area=<?= $areaFiltro ?>&pagina=<?= $i ?>"
+                                    class="<?= $i == $paginaAtual ? 'ativo' : 'inativo' ?>">
                                     <?= $i ?>
-                                </a>
+                                    </a>
+                                </div> 
                             <?php endfor; ?>
                         </div>
                     <?php endif; ?>
