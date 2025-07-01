@@ -1,8 +1,9 @@
 <?php
 // Configurações globais
-define('BASE_PATH', 'C:\xampp\htdocs\web2\prova');
+define('BASE_PATH', '/web2/prova');
 define('BASE_URL', 'https://localhost/web2/prova');
 define('VIEWS_PATH', __DIR__ . '/views/');
+define('APP_PATH', __DIR__. '/app/');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'quizads');
 define('DB_USER', 'root');

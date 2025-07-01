@@ -1,101 +1,40 @@
 <?php
 require_once 'constants.php';
-require_once 'controller.php';
+require_once __DIR__.'/app/Database.php';
+require_once __DIR__.'/app/UserModel.php';
+require_once __DIR__.'/app/PageModel.php';
+require_once __DIR__.'/app/PageController.php';
+require_once __DIR__.'/app/AuthController.php';
+require_once __DIR__.'/app/AuthMiddleware.php';
+require_once __DIR__.'/app/Container.php';
+require_once __DIR__.'/app/Router.php';
 
-// Inicia a sessão se não estiver iniciada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Inicializa o container de dependências
+$container = new Container();
 
-// Roteamento básico
-$action = $_GET['action'] ?? 'home';
+// Configura o roteador
+$router = new Router($container);
 
-try {
-    $controller = new MainController();
+// Rotas principais
+$router->get('/', 'PageController@home');
+$router->get('/busca', 'PageController@buscarCurriculos');
 
-    // Verifica se a ação requer autenticação
-    $protectedActions = ['admin', 'adicionarPergunta', 'editarPergunta'];
-    if (in_array($action, $protectedActions)) {
-        $isAdmin = isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'admin' || 
-                  isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] === 'admin';
-        
-        if (!$isAdmin) {
-            header("Location: " . BASE_URL . "?action=login");
-            exit();
-        }
-    }
-    error_log("Nova Requisicao: action: " . $action);
+// Rotas de autenticação
+$router->get('/login', 'AuthController@showLogin');
+$router->get('/cadastro', 'AuthController@showRegister');
+$router->get('/logout', 'AuthController@logout');
+$router->post('/login', 'AuthController@login');
+$router->post('/cadastro', 'AuthController@register');
 
-    switch ($action) {
-        case 'home':
-            $controller->home();
-            break;
-        case 'busca':
-            $controller->buscarCurriculos();
-            break;
-        case 'curriculo':
-            $id = $_GET['id'] ?? 0;
-            $controller->verCurriculo($id);
-            break;
-        case 'atualizar':
-            $controller->processarAtualizacao();
-            break;
-        case 'login':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->processarLogin();
-            } else {
-                $controller->mostrarLogin();
-            }
-            break;
-        case 'cadastro':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $controller->processarCadastro();
-            } else {
-                $controller->mostrarCadastro();
-            }
-            break;
-        case 'logout':
-            $controller->logout();
-            break;
-        case 'quiz':
-            $controller->mostrarQuiz();
-            break;
-        case 'jogar':
-            $controller->iniciarQuiz();
-            break;
-        case 'processarQuiz':
-            $controller->processarQuiz();
-            break;
-        case 'admin':
-            $controller->gerenciar();
-            break;
-        case 'toggleStatus':
-            $controller->toggleStatus();
-            break;
-        case 'excluirPergunta':
-            $controller->excluirPergunta();
-            break;
-        case 'adicionarPergunta':
-            $controller->mostrarFormularioPergunta();
-            break;
-        case 'cadastrarPergunta':
-            $controller->processarAdicaoPergunta();
-            break;
-        default:
-            header("HTTP/1.0 404 Not Found");
-            require_once VIEWS_PATH . '404.php';
-    }
-} catch (Exception $e) {
-    error_log($e->getMessage());
-    header("HTTP/1.1 500 Internal Server Error");
+// Rotas do quiz
+$router->get('/quiz', 'PageController@mostrarQuiz');
+$router->get('/jogar', 'PageController@iniciarQuiz');
+$router->post('/processar-quiz', 'PageController@processQuiz');
 
-    $dados = [
-        'titulo'    => 'Erro no Sistema',
-        'descricao' => 'Desculpe, ocorreu um erro inesperado. Nossa equipe foi notificada.',
-        'areas'     => [],
-    ];
+// Rotas administrativas (protegidas)
+$router->get('/admin', 'PageController@gerenciarQuiz', ['AuthMiddleware']);
+$router->post('/adicionar-pergunta', 'PageController@adicionarPergunta', ['AuthMiddleware']);
+$router->post('/excluir-pergunta', 'PageController@excluirPergunta', ['AuthMiddleware']);
+$router->post('/toggle-status', 'PageController@toggleStatus', ['AuthMiddleware']);
 
-    require VIEWS_PATH . 'header.php';
-    require VIEWS_PATH . 'erro.php';
-    require VIEWS_PATH . 'footer.php';
-}
+$router->dispatch();

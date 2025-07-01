@@ -1,14 +1,10 @@
 RewriteEngine On
 RewriteBase /web2/prova/
 
-# Desativa rewrite para requisições POST
-RewriteCond %{REQUEST_METHOD} POST
-RewriteRule ^ - [L]
-
 # Front Controller para outras requisições
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?action=$1 [L,QSA]
+RewriteRule ^(.*)$ index.php [L,QSA]
 
 php_value display_errors On
 php_value date.timezone America/Belem

@@ -1,7 +1,7 @@
 <main class="container">
     <section class="hero card">
-        <h1><?= $dados['titulo'] ?></h1>
-            <p><?= $dados['descricao'] ?></p>
+    <h1><?= $dados['titulo'] ?? 'Bem-vindo' ?></h1>
+    <p><?= $dados['descricao'] ?? 'Sistema de avaliação de conhecimentos' ?></p>
         <?php if (isset($dados['usuario'])): ?>
             <a href="<?= BASE_URL ?>?action=cadastro" class="btn">Editar cadastro</a>
         <?php else: ?>

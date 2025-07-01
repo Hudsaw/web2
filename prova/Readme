@@ -1,0 +1,29 @@
+quizads
+├── app/
+│   ├── AuthController.php
+│   ├── AuthMiddleware.php
+│   ├── Container.php
+│   ├── Database.php
+│   ├── PageController.php
+│   ├── PageModel.php
+│   ├── Router.php
+│   └── UserModel.php
+├── views/
+│   ├── 404.php
+│   ├── admin.php
+│   ├── busca.php
+│   ├── cadastro.php
+│   ├── curriculo.php
+│   ├── footer.php
+│   ├── header.php
+│   ├── home.php
+│   ├── jogar.php
+│   ├── pergunta.php
+│   ├── quiz.php
+│   └── selecionar.php
+├── .htaccess
+├── banco.sql
+├── constants.php
+├── index.php
+├── style.css
+└── theme.js
