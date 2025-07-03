@@ -25,6 +25,7 @@ $router->get('/login', 'AuthController@showLogin');
 $router->get('/cadastro', 'PageController@mostrarCadastro');
 $router->get('/editar', 'PageController@mostrarCadastro', ['AuthMiddleware']);
 $router->get('/logout', 'AuthController@logout');
+$router->post('/cadastro', 'AuthController@registrar');
 $router->post('/atualizar', 'AuthController@atualizar', ['AuthMiddleware']);
 $router->post('/login', 'AuthController@login');
 

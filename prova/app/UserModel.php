@@ -22,64 +22,84 @@ class UserModel
         return false;
     }
 
-    public function createUser(array $userData)
-    {
-        try {
-            $stmt = $this->pdo->prepare("
-                INSERT INTO usuarios
-                (nome, email, senha, tipo, area_atuacao_id)
-                VALUES (?, ?, ?, ?, ?)
-            ");
+    public function createUser(array $data)
+{
+    try {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO usuarios
+            (nome, email, senha, tipo, area_atuacao_id, cpf, telefone, cep, complemento, escolaridade, resumo, experiencias, linkedin, github)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
 
-            $success = $stmt->execute([
-                $userData['nome'],
-                $userData['email'],
-                password_hash($userData['senha'], PASSWORD_DEFAULT),
-                $userData['tipo'] ?? 'candidato',
-                $userData['area_atuacao_id'] ?? null,
-            ]);
+        $success = $stmt->execute([
+            $data['nome'],
+            $data['email'],
+            password_hash($data['senha'], PASSWORD_DEFAULT),
+            'candidato',
+            $data['area_atuacao_id'] ?? null,
+            $data['cpf'],
+            $data['telefone'],
+            $data['cep'],
+            $data['complemento'],
+            $data['escolaridade'],
+            $data['resumo'],
+            $data['experiencias'],
+            $data['linkedin'] ?? null,
+            $data['github'] ?? null,
+        ]);
 
-            return $success ? $this->pdo->lastInsertId() : false;
-        } catch (PDOException $e) {
-            error_log("Error creating user: " . $e->getMessage());
-            return false;
-        }
+        return $success ? $this->pdo->lastInsertId() : false;
+    } catch (PDOException $e) {
+        error_log("Error creating user: " . $e->getMessage());
+        return false;
     }
+}
 
     public function updateUser($userId, $data)
-    {
-        try {
-            // Prepare os dados para atualização
-            $updateData = [
-                'nome'            => $data['nome'],
-                'telefone'        => $data['telefone'],
-                'cpf'             => $data['cpf'],
-                'cep'             => $data['cep'],
-                'complemento'     => $data['complemento'],
-                'area_atuacao_id' => $data['area_atuacao_id'],
-                'escolaridade'    => $data['escolaridade'],
-                'resumo'          => $data['resumo'],
-                'experiencias'    => $data['experiencias'],
-                'linkedin'        => $data['linkedin'] ?? null,
-                'github'          => $data['github'] ?? null,
-            ];
+{
+    try {
+        $campos = [
+            'nome'      => $data['nome'],
+            'email'     => $data['email'],
+            'telefone'  => $data['telefone'],
+            'cpf'       => $data['cpf'],
+            'cep'       => $data['cep'],
+            'complemento' => $data['complemento'],
+            'area_atuacao_id' => $data['area_atuacao_id'],
+            'escolaridade' => $data['escolaridade'],
+            'resumo'     => $data['resumo'],
+            'experiencias' => $data['experiencias'],
+            'linkedin'  => $data['linkedin'] ?? null,
+            'github'    => $data['github'] ?? null,
+        ];
 
-            // Se a senha foi fornecida, atualize-a também
-            if (! empty($data['senha'])) {
-                $updateData['senha'] = password_hash($data['senha'], PASSWORD_DEFAULT);
-            }
-
-            // Execute a atualização no banco de dados
-            $stmt = $this->db->prepare("UPDATE usuarios SET ... WHERE id = :id");
-            $stmt->bindValue(':id', $userId);
-            // bind outros valores...
-
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            // Log do erro
-            return false;
+        // Adicionar senha se fornecida
+        if (!empty($data['senha'])) {
+            $campos['senha'] = password_hash($data['senha'], PASSWORD_DEFAULT);
         }
+
+        $setParts = [];
+        $params = [];
+        
+        foreach ($campos as $campo => $value) {
+            $setParts[] = "{$campo} = ?";
+            $params[] = $value;
+        }
+        
+        $params[] = $userId;
+        
+        $query = "UPDATE usuarios SET " . implode(', ', $setParts) . " WHERE id = ?";
+        
+        // Executar a atualização
+        $stmt = $this->pdo->prepare($query);
+        $success = $stmt->execute($params);
+
+        return $success;
+    } catch (PDOException $e) {
+        error_log("Error updating user: " . $e->getMessage());
+        return false;
     }
+}
 
     public function getUserById($id)
     {
@@ -104,6 +124,13 @@ class UserModel
     {
         $stmt = $this->pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
         $stmt->execute([$email]);
+        return $stmt->fetch() !== false;
+    }
+
+    public function cpfExists($cpf)
+    {
+        $stmt = $this->pdo->prepare("SELECT id FROM usuarios WHERE cpf = ?");
+        $stmt->execute([$cpf]);
         return $stmt->fetch() !== false;
     }
 

@@ -10,11 +10,9 @@ class PageController
         $this->pageModel = $pageModel;
     }
 
-    /**
-     * Exibe a página inicial
-     */
     public function home()
     {
+        error_log("Exibindo pagina inicial");
         $user  = $this->getCurrentUser();
         $areas = $this->userModel->getAreasAtuacao();
 
@@ -33,27 +31,26 @@ class PageController
     }
 
     public function mostrarCadastro()
-{
-    $data = [
-        'errors' => $_SESSION['register_errors'] ?? [],
-        'dados' => [],
-        'areas' => $this->userModel->getAreasAtuacao()
-    ];
+    {
+        error_log("Exibindo formulario de cadastro");
+        $data = [
+            'errors' => $_SESSION['register_errors'] ?? [],
+            'dados'  => [],
+            'areas'  => $this->userModel->getAreasAtuacao(),
+        ];
 
-    // Se usuário está logado, carrega seus dados
-    if (isset($_SESSION['user_id'])) {
-        $data['dados'] = $this->userModel->getUserById($_SESSION['user_id']);
+        // Se usuário está logado, carrega seus dados
+        if (isset($_SESSION['user_id'])) {
+            $data['dados'] = $this->userModel->getUserById($_SESSION['user_id']);
+        }
+
+        $this->render('cadastro', $data);
+        unset($_SESSION['register_errors']);
     }
 
-    $this->render('cadastro', $data);
-    unset($_SESSION['register_errors']);
-}
-
-    /**
-     * Busca currículos com filtros
-     */
     public function buscarCurriculos()
     {
+        error_log("Buscando curriculos com filtro de area");
         $areaFilter = $_GET['area'] ?? null;
         $page       = max((int) ($_GET['page'] ?? 1), 1);
         $perPage    = 10;
@@ -76,11 +73,9 @@ class PageController
         ]);
     }
 
-    /**
-     * Exibe a tela de seleção de quiz
-     */
     public function mostrarQuiz()
     {
+        error_log("Exibindo pagina de selecao de quiz");
         $this->render('selecionar', [
             'title'         => 'Selecionar Quiz',
             'areas'         => $this->userModel->getAreasAtuacao(),
@@ -94,11 +89,9 @@ class PageController
         ]);
     }
 
-    /**
-     * Inicia um novo quiz
-     */
     public function iniciarQuiz()
     {
+        error_log("Iniciando quiz");
         if (! $this->isLoggedIn()) {
             $_SESSION['redirect_url'] = '?action=startQuiz';
             $this->redirect('/login');
@@ -129,11 +122,9 @@ class PageController
         ]);
     }
 
-    /**
-     * Processa as respostas do quiz
-     */
     public function finalizarQuiz()
     {
+        error_log("Finalizando quiz");
         header('Content-Type: application/json');
 
         if (! $this->isLoggedIn()) {
@@ -174,11 +165,9 @@ class PageController
         exit();
     }
 
-    /**
-     * Gerencia o painel administrativo
-     */
     public function gerenciarQuiz()
     {
+        error_log("Tentativa de acesso ao painel administrativo");
         if (! $this->isAdmin()) {
             $this->redirect('/login');
             return;
@@ -203,11 +192,9 @@ class PageController
         ]);
     }
 
-    /**
-     * Adiciona uma nova pergunta
-     */
     public function adicionarPergunta()
     {
+        error_log("Tentativa de adicionar pergunta");
         if (! $this->isAdmin()) {
             echo json_encode(['error' => 'Acesso negado']);
             http_response_code(403);
@@ -231,11 +218,9 @@ class PageController
         exit();
     }
 
-    /**
-     * Exclui uma pergunta
-     */
     public function excluirPergunta()
     {
+        error_log("Tentativa de exclusao de pergunta");
         if (! $this->isAdmin()) {
             echo json_encode(['error' => 'Acesso negado']);
             http_response_code(403);
@@ -256,11 +241,9 @@ class PageController
         exit();
     }
 
-    /**
-     * Alterna o status de uma pergunta
-     */
     public function toggleStatus()
     {
+        error_log("Tentativa de alternar status da pergunta");
         if (! $this->isAdmin()) {
             echo json_encode(['error' => 'Acesso negado']);
             http_response_code(403);
@@ -281,11 +264,9 @@ class PageController
         exit();
     }
 
-    /**
-     * Renderiza a view de adicionar pergunta
-     */
     public function mostrarAdicionarPergunta()
     {
+        error_log("Exibindo formulario de adicao de pergunta");
         if (! $this->isAdmin()) {
             $this->redirect('/login');
             return;
@@ -301,11 +282,9 @@ class PageController
         ]);
     }
 
-    /**
-     * Exibe um currículo específico
-     */
     public function mostrarCurriculo()
     {
+        error_log("Exibindo curriculo");
         $curriculoId = $_GET['id'] ?? null;
 
         if (! $curriculoId) {
