@@ -173,19 +173,19 @@ class PageController
             return;
         }
 
-        $page    = max((int) ($_GET['page'] ?? 1), 1);
-        $perPage = 10;
-        $offset  = ($page - 1) * $perPage;
+        $paginaAtual = max((int) ($_GET['page'] ?? $_GET['pagina'] ?? 1), 1);
+        $perPage     = 10;
+        $offset      = ($paginaAtual - 1) * $perPage;
 
-        $questions      = $this->pageModel->getPerguntasPaginadas($perPage, $offset);
-        $totalQuestions = $this->pageModel->countPerguntas();
+        $perguntas      = $this->pageModel->getPerguntasPaginadas($perPage, $offset);
+        $totalPerguntas = $this->pageModel->countPerguntas();
 
         $this->render('admin', [
-            'title'          => 'Painel Admin',
-            'perguntas'      => $questions,
-            'paginaAtual'    => $page,
-            'totalPerguntas' => $totalQuestions,
-            'totalPaginas'   => ceil($totalQuestions / $perPage),
+            'titulo'         => 'Painel Administrativo',
+            'perguntas'      => $perguntas,
+            'paginaAtual'    => $paginaAtual,
+            'totalPerguntas' => $totalPerguntas,
+            'totalPaginas'   => ceil($totalPerguntas / $perPage),
             'user'           => $this->getCurrentUser(),
             'nomeUsuario'    => $this->getCurrentUser()['nome'],
             'usuarioLogado'  => true,
@@ -195,12 +195,6 @@ class PageController
     public function adicionarPergunta()
     {
         error_log("Tentativa de adicionar pergunta");
-        if (! $this->isAdmin()) {
-            echo json_encode(['error' => 'Acesso negado']);
-            http_response_code(403);
-            exit();
-        }
-
         $dados = [
             'pergunta'         => $_POST['pergunta'],
             'resposta_correta' => $_POST['resposta_correta'],
@@ -213,9 +207,8 @@ class PageController
 
         $success = $this->pageModel->addPergunta($dados);
 
-        header('Content-Type: application/json');
-        echo json_encode(['success' => $success]);
-        exit();
+        $_SESSION['mensagem'] = $success ? 'Pergunta adicionada com sucesso!' : 'Erro ao excluir pergunta';
+        $this->redirect('/');
     }
 
     public function excluirPergunta()
@@ -236,9 +229,8 @@ class PageController
 
         $success = $this->pageModel->deletePergunta($perguntaId);
 
-        header('Content-Type: application/json');
-        echo json_encode(['success' => $success]);
-        exit();
+        $_SESSION['mensagem'] = $success ? 'Pergunta excluída com sucesso!' : 'Erro ao excluir pergunta';
+        $this->redirect('/admin?page=' . $paginaAtual);
     }
 
     public function toggleStatus()
@@ -259,21 +251,15 @@ class PageController
 
         $success = $this->pageModel->togglePerguntaStatus($perguntaId);
 
-        header('Content-Type: application/json');
-        echo json_encode(['success' => $success]);
-        exit();
+        $_SESSION['mensagem'] = $success ? 'Status da pergunta alterado com sucesso!' : 'Erro ao alterar status';
+        $this->redirect('/admin?page=' . $paginaAtual);
     }
 
-    public function mostrarAdicionarPergunta()
+    public function mostrarAdicionar()
     {
         error_log("Exibindo formulario de adicao de pergunta");
-        if (! $this->isAdmin()) {
-            $this->redirect('/login');
-            return;
-        }
-
         $this->render('pergunta', [
-            'title'         => 'Adicionar Nova Pergunta',
+            'titulo'        => 'Adicionar Nova Pergunta',
             'areas'         => $this->userModel->getAreasAtuacao(),
             'niveis'        => $this->pageModel->getNiveisDificuldade(),
             'user'          => $this->getCurrentUser(),
@@ -311,9 +297,22 @@ class PageController
     // Métodos auxiliares
 
     private function getCurrentUser()
-    {
-        return isset($_SESSION['user_id']) ? $this->userModel->getUserById($_SESSION['user_id']) : null;
+{
+    if (!isset($_SESSION['user_id'])) {
+        return null;
     }
+    
+    $user = $this->userModel->getUserById($_SESSION['user_id']);
+    
+    // Adicionar pontuação se não estiver presente
+    if ($user && !isset($user['avaliacao'])) {
+        $score = $this->userModel->getUserScore($_SESSION['user_id']);
+        $user['avaliacao'] = $score['correct'] ?? 0;
+        $user['total_perguntas'] = $score['total'] ?? 0;
+    }
+    
+    return $user;
+}
 
     private function isLoggedIn()
     {
@@ -322,6 +321,7 @@ class PageController
 
     private function isAdmin()
     {
+        error_log("Verificando se usuário é administrador" . $_SESSION['user_role']);
         return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
     }
 
@@ -346,7 +346,9 @@ class PageController
 
     private function redirect($url)
     {
-        header("Location: " . BASE_URL . ltrim($url, '/'));
+        $baseUrl = rtrim(BASE_URL, '/') . '/';
+        $path = ltrim($url, '/');
+        header("Location: " . $baseUrl . $path);
         exit();
     }
 

@@ -34,15 +34,20 @@
                                 <button class="theme-switcher"></button>
                             </div>
 
-                            <?php if (isset($dados['usuario']) && isset($dados['usuario']['avaliacao']) && isset($dados['usuario']['total_perguntas']) && $dados['usuario']['total_perguntas'] > 0): ?>
-            <span class="user-score">
-                <?= round(($dados['usuario']['avaliacao'] / $dados['usuario']['total_perguntas']) * 100) ?>% acertos
-            </span>
-        <?php elseif (isset($dados['usuario'])): ?>
-            <span class="user-score">
-                0% acertos
-            </span>
-        <?php endif; ?>
+                            <?php if ($usuarioLogado ?? false): ?>
+        <?php 
+            $user = $this->getCurrentUser();
+            $score = 0;
+            $totalQuestions = $user['total_perguntas'] ?? 0;
+            
+            if ($totalQuestions > 0) {
+                $score = round(($user['avaliacao'] / $totalQuestions) * 100);
+            }
+        ?>
+        <span class="user-score">
+            <?= $score ?>% acertos
+        </span>
+    <?php endif; ?>
                             <div>
                                 <?php if ($usuarioLogado ?? false): ?>
                                     <a href="<?= BASE_URL ?>/logout" class="btn-logout">

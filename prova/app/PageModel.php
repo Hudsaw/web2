@@ -92,17 +92,16 @@ class PageModel
         return $result['correct'] > 0;
     }
 
-    public function updateUserScore($userId, $correct, $total)
+    public function updateUserScore($userId, $corretas, $total)
     {
-        $percentage = round(($correct / $total) * 100);
 
         $stmt = $this->pdo->prepare("
-            UPDATE curriculos
+            UPDATE usuarios
             SET avaliacao = ?, total_perguntas = ?
-            WHERE usuario_id = ?
+            WHERE id = ?
         ");
 
-        return $stmt->execute([$percentage, $total, $userId]);
+        return $stmt->execute([$corretas, $total, $userId]);
     }
 
     public function getPerguntasPaginadas($limit, $offset)

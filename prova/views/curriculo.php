@@ -19,7 +19,7 @@
                 <p><?= nl2br(htmlspecialchars($curriculo['formacao'] ?? 'Não informada')) ?></p>
                 
                 <h2>Pontuação no Quiz</h2>
-                <p><?= isset($curriculo['avaliacao']) ? $curriculo['avaliacao'] . '%' : 'Ainda não avaliado' ?></p>
+                <p><?= isset($curriculo['avaliacao']) ? $curriculo['avaliacao'] / $curriculo['total_perguntas']*100 . ' %' : 'Ainda não avaliado' ?></p>
             </div>
             
             <a href="<?= BASE_URL ?>/busca" class="btn">Voltar para a busca</a>

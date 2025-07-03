@@ -29,10 +29,6 @@
     </div>
 </div>
 
-
-            <script>
-                const perguntasQuiz =                                                                           <?php echo json_encode($dados['perguntas']) ?>;
-            </script>
         </div>
     </section>
 </main>

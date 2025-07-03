@@ -1,6 +1,6 @@
 <main class="container">
     <section class="card">
-        <h1><?= $dados['titulo'] ?></h1>
+        <h1><?= $titulo ?></h1>
         
         <?php if (isset($_SESSION['erro'])): ?>
             <div class="alert alert-danger"><?= $_SESSION['erro'] ?></div>
@@ -42,7 +42,7 @@
                 <label for="area_atuacao_id">Área de Atuação:</label>
                 <select id="area_atuacao_id" name="area_atuacao_id" required>
                     <option value="">Selecione uma área</option>
-                    <?php foreach ($dados['areas'] as $area): ?>
+                    <?php foreach ($areas as $area): ?>
                         <option value="<?= $area['id'] ?>" 
                             <?= isset($_SESSION['dados_form']['area_atuacao_id']) && $_SESSION['dados_form']['area_atuacao_id'] == $area['id'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($area['nome']) ?>
@@ -54,7 +54,7 @@
             <div class="form-group">
                 <label for="nivel_id">Nível de Dificuldade:</label>
                 <select id="nivel_id" name="nivel_id" required>
-                    <?php foreach ($dados['niveis'] as $nivel): ?>
+                    <?php foreach ($niveis as $nivel): ?>
                         <option value="<?= $nivel['id'] ?>" 
                             <?= isset($_SESSION['dados_form']['nivel_id']) && $_SESSION['dados_form']['nivel_id'] == $nivel['id'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($nivel['nome']) ?>

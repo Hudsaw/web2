@@ -32,9 +32,9 @@ $router->post('/login', 'AuthController@login');
 // Rotas do quiz
 $router->get('/quiz', 'PageController@mostrarQuiz');
 $router->get('/jogar', 'PageController@iniciarQuiz');
-$router->get('/adicionar', 'PageController@adicionarPergunta');
+$router->get('/adicionar', 'PageController@mostrarAdicionar');
 $router->post('/finalizar', 'PageController@finalizarQuiz');
-$router->post('/adicionar', 'PageController@registrarPergunta');
+$router->post('/adicionar', 'PageController@adicionarPergunta');
 
 // Rotas administrativas (protegidas)
 $router->get('/admin', 'PageController@gerenciarQuiz', ['AuthMiddleware']);
