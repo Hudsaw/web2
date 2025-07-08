@@ -263,7 +263,7 @@ class PageController
             'areas'         => $this->userModel->getAreasAtuacao(),
             'niveis'        => $this->pageModel->getNiveisDificuldade(),
             'user'          => $this->getCurrentUser(),
-            'nomeUsuario'   => $this->getCurrentUser()['nome'],
+            'nomeUsuario'   => $this->getCurrentUser()['nome'] ?? 'Visitante',
             'usuarioLogado' => true,
         ]);
     }
