@@ -27,8 +27,8 @@ class UserModel
     try {
         $stmt = $this->pdo->prepare("
             INSERT INTO usuarios
-            (nome, email, senha, tipo, area_atuacao_id, cpf, telefone, cep, complemento, escolaridade, resumo, experiencias, linkedin, github)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (nome, email, senha, tipo, avaliacao, total_perguntas, area_atuacao_id, cpf, telefone, cep, complemento, escolaridade, resumo, experiencias, linkedin, github)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $success = $stmt->execute([
@@ -36,6 +36,8 @@ class UserModel
             $data['email'],
             password_hash($data['senha'], PASSWORD_DEFAULT),
             'candidato',
+            0, // avaliacao
+            0, // total_perguntas
             $data['area_atuacao_id'] ?? null,
             $data['cpf'],
             $data['telefone'],
@@ -139,4 +141,16 @@ class UserModel
         $stmt = $this->pdo->query("SELECT id, nome FROM area_atuacao ORDER BY nome");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getUserScore($userId)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT avaliacao as correct, total_perguntas as total 
+        FROM usuarios
+        WHERE id = ?
+    ");
+    $stmt->execute([$userId]);
+    
+    return $stmt->fetch(PDO::FETCH_ASSOC) ?: ['correct' => 0, 'total' => 0];
+}
 }
