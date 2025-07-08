@@ -34,7 +34,7 @@ CREATE TABLE area_atuacao (
 -- Tabela de níveis de dificuldade
 CREATE TABLE nivel (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    nome ENUM('Fácil', 'Médio', 'Difícil') NOT NULL
+    nome ENUM('Facil', 'Medio', 'Dificil') NOT NULL
 );
 
 -- Tabela de perguntas

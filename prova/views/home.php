@@ -13,8 +13,8 @@
         <h2>Sobre o Quiz</h2>
         <p>O Quiz ADS é um teste de conhecimento para avaliar as habilidades e competências dos candidatos para as vagas de ADS.</p>
         <div class="form-group">
-            <a href="<?= BASE_URL ?>/quiz" class="btn btn-entrar">Jogar</a>
             <?php if (isset($dados['usuario'])):?>
+            <a href="<?= BASE_URL ?>/quiz" class="btn btn-entrar">Jogar</a>
             <a href="<?= BASE_URL ?>/adicionar" class="btn btn-entrar">Criar Pergunta</a>
             <?php endif; ?>
             <?php if (isset($dados['usuario']) && $dados['usuario']['tipo'] == 'admin'): ?>
